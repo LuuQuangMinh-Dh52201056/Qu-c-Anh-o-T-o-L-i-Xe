@@ -52,7 +52,9 @@ export default function ContactPage() {
             </span>
 
             <strong>
-              quocanh.daotaolaixe@gmail.com
+              <a href="mailto:hoclaixequocanh@gmail.com">
+                hoclaixequocanh@gmail.com
+              </a>
             </strong>
 
           </div>

@@ -139,7 +139,7 @@ export default function Footer() {
 
 
           <a
-            href="mailto:quocanhdaotaolaixe@gmail.com"
+            href="mailto:hoclaixequocanh@gmail.com"
             className="footer-contact-item"
           >
 
@@ -155,7 +155,7 @@ export default function Footer() {
               </small>
 
               <strong>
-                quocanhdaotaolaixe@gmail.com
+                hoclaixequocanh@gmail.com
               </strong>
 
             </div>

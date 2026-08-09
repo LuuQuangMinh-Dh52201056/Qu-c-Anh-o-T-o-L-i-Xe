@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: quoc-anh-dao-tao-lai-xe
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22.14.0
+      - key: GOOGLE_SCRIPT_URL
+        sync: false
+      - key: GOOGLE_SCRIPT_SECRET
+        sync: false

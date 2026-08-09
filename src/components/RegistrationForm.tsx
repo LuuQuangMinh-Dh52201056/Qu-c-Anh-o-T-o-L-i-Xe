@@ -1,6 +1,7 @@
 import {
   useEffect,
   useId,
+  useRef,
   useState,
   type FormEvent,
 } from 'react'
@@ -25,6 +26,7 @@ import {
 import { courses } from '../data/courses'
 
 import {
+  createLeadId,
   submitRegistration,
   type RegistrationPayload,
 } from '../services/googleSheetService'
@@ -96,6 +98,11 @@ export default function RegistrationForm({
 
   const [message, setMessage] =
     useState('')
+
+  const [companyWebsite, setCompanyWebsite] =
+    useState('')
+
+  const pendingLeadId = useRef('')
 
   useEffect(() => {
     setForm((previous) => ({
@@ -184,6 +191,15 @@ export default function RegistrationForm({
   ) => {
     event.preventDefault()
 
+    // Trường bẫy bot: người dùng thật không nhìn thấy và không điền trường này.
+    if (companyWebsite.trim()) {
+      setStatus('success')
+      setMessage(
+        'Đăng ký của bạn đã được tiếp nhận.'
+      )
+      return
+    }
+
     if (!validate()) {
       setStatus('error')
       setMessage(
@@ -207,18 +223,33 @@ export default function RegistrationForm({
     }
 
     try {
-      await submitRegistration(payload)
+      if (!pendingLeadId.current) {
+        pendingLeadId.current = createLeadId()
+      }
+
+      const result = await submitRegistration(
+        payload,
+        pendingLeadId.current
+      )
+
+      const shortLeadId = result.leadId
+        .replace(/[^a-zA-Z0-9]/g, '')
+        .slice(-8)
+        .toUpperCase()
 
       setStatus('success')
       setMessage(
-        'Đăng ký thành công! Quốc Anh sẽ liên hệ tư vấn cho bạn trong thời gian sớm nhất.'
+        `Đăng ký thành công! Mã tiếp nhận ${shortLeadId}. Quốc Anh sẽ sớm liên hệ tư vấn cho bạn.`
       )
+
+      pendingLeadId.current = ''
 
       setForm({
         ...initialState,
         course: safeDefaultCourse,
       })
       setConsent(false)
+      setCompanyWebsite('')
       setErrors({})
     } catch (error) {
       setStatus('error')
@@ -250,6 +281,17 @@ export default function RegistrationForm({
       noValidate
     >
       <div className="lead-form__accent" />
+
+      <label className="lead-form__honeypot" aria-hidden="true">
+        Không điền trường này
+        <input
+          name="companyWebsite"
+          value={companyWebsite}
+          onChange={(event) => setCompanyWebsite(event.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </label>
 
       <header className="lead-form__header">
         <div className="lead-form__eyebrow">
@@ -410,30 +452,28 @@ export default function RegistrationForm({
               </label>
             )}
 
-            {!compact && (
-              <label className={fieldClass('area')}>
-                <span className="lead-form__label">
-                  Khu vực sinh sống
-                </span>
+            <label className={fieldClass('area', compact)}>
+              <span className="lead-form__label">
+                Khu vực sinh sống
+              </span>
 
-                <span className="lead-form__control">
-                  <MapPin size={18} />
-                  <input
-                    id={`${formId}-area`}
-                    value={form.area}
-                    onChange={(event) =>
-                      changeField(
-                        'area',
-                        event.target.value
-                      )
-                    }
-                    placeholder="Quận/Huyện, Tỉnh/TP"
-                    autoComplete="address-level2"
-                    maxLength={100}
-                  />
-                </span>
-              </label>
-            )}
+              <span className="lead-form__control">
+                <MapPin size={18} />
+                <input
+                  id={`${formId}-area`}
+                  value={form.area}
+                  onChange={(event) =>
+                    changeField(
+                      'area',
+                      event.target.value
+                    )
+                  }
+                  placeholder="Quận/Huyện, Tỉnh/TP"
+                  autoComplete="address-level2"
+                  maxLength={100}
+                />
+              </span>
+            </label>
           </div>
         </section>
 
@@ -664,7 +704,7 @@ export default function RegistrationForm({
                 className="lead-form__spinner"
                 size={20}
               />
-              Đang gửi thông tin...
+              Đang lưu đăng ký an toàn...
             </>
           ) : (
             <>

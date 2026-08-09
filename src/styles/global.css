@@ -3118,6 +3118,11 @@ main {
   line-height: 1.6;
 }
 
+.contact-card strong a {
+  color: inherit;
+  overflow-wrap: anywhere;
+}
+
 
 /* =========================================================
    34. FOOTER - WHITE PREMIUM
@@ -5034,6 +5039,15 @@ main {
   inset: 0 0 auto;
   height: 5px;
   background: linear-gradient(90deg, #f0b51b, #ffd75a 40%, #1180bd 100%);
+}
+
+.lead-form__honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .lead-form__header {
