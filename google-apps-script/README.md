@@ -172,6 +172,6 @@ Hai địa chỉ email mặc định nhận thông báo sau khi dòng được g
 - Thời gian và trạng thái do máy chủ quyết định.
 - Không ghi đè sheet có cấu trúc tiêu đề khác.
 - Gửi thông báo lead mới tới email nội bộ theo cơ chế không ảnh hưởng việc ghi Sheet.
-- Có khóa bí mật tùy chọn giữa Render và Apps Script để chặn gọi trực tiếp trái phép.
+- Có khóa bí mật bắt buộc giữa Render và Apps Script để chặn gọi trực tiếp trái phép.
 
 URL Apps Script chỉ nằm trong biến môi trường phía máy chủ. API website có honeypot và giới hạn tần suất cơ bản; nếu lượng spam tăng mạnh, có thể bổ sung Turnstile/reCAPTCHA.

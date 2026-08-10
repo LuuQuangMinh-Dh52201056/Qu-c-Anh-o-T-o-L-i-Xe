@@ -12,6 +12,8 @@ npm start
 
 Mặc định máy chủ chạy tại `http://localhost:10000` hoặc cổng trong biến `PORT`.
 
+Khi cần thử form với Apps Script trên máy cá nhân, sao chép `.env.server.example` thành `.env.server`, điền URL `/exec` và khóa bí mật. File `.env.server` đã được bỏ khỏi Git để không lộ cấu hình tiếp nhận đăng ký.
+
 - `GET /api/health`: trạng thái máy chủ và cấu hình Google Apps Script.
 - `POST /api/registrations`: kiểm tra dữ liệu, chuyển tiếp tới Apps Script và chỉ báo thành công khi Sheet xác nhận.
 - Các đường dẫn SPA như `/dang-ky`, `/khoa-hoc/A1` được trả về đúng `index.html`.

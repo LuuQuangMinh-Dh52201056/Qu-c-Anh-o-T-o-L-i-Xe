@@ -239,7 +239,11 @@ export default function RegistrationForm({
 
       setStatus('success')
       setMessage(
-        `Đăng ký thành công! Mã tiếp nhận ${shortLeadId}. Quốc Anh sẽ sớm liên hệ tư vấn cho bạn.`
+        result.updated
+          ? `Đã cập nhật thông tin đăng ký! Mã tiếp nhận ${shortLeadId}. Quốc Anh sẽ liên hệ theo thông tin mới nhất của bạn.`
+          : result.duplicate
+            ? `Đăng ký này đã được tiếp nhận trước đó. Mã tiếp nhận ${shortLeadId}. Quốc Anh sẽ sớm liên hệ tư vấn cho bạn.`
+            : `${result.message} Mã tiếp nhận ${shortLeadId}. Quốc Anh sẽ sớm liên hệ tư vấn cho bạn.`
       )
 
       pendingLeadId.current = ''
@@ -725,6 +729,7 @@ export default function RegistrationForm({
             className={`lead-form__message lead-form__message--${status}`}
             role={status === 'error' ? 'alert' : 'status'}
             aria-live="polite"
+            aria-atomic="true"
           >
             {status === 'success' && (
               <CheckCircle2 size={20} />

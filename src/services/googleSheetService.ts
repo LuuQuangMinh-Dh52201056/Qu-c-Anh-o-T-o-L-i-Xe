@@ -13,6 +13,8 @@ export type RegistrationResult = {
   success: true
   message: string
   leadId: string
+  duplicate: boolean
+  updated: boolean
 }
 
 type ViteImportMeta = ImportMeta & {
@@ -193,6 +195,8 @@ export async function submitRegistration(
         result.message ||
         'Đăng ký của bạn đã được ghi nhận.',
       leadId: result.leadId || leadId,
+      duplicate: result.duplicate === true,
+      updated: result.updated === true,
     }
   } catch (error) {
     if (error instanceof DOMException && error.name === 'AbortError') {

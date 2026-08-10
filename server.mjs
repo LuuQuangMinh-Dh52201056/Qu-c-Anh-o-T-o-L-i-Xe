@@ -1,9 +1,49 @@
 import { randomBytes } from 'node:crypto'
-import { createReadStream } from 'node:fs'
+import { createReadStream, existsSync, readFileSync } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { extname, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
+
+function loadLocalEnv() {
+  const envFile = fileURLToPath(new URL('./.env.server', import.meta.url))
+
+  if (!existsSync(envFile)) {
+    return
+  }
+
+  for (const rawLine of readFileSync(envFile, 'utf8').split(/\r?\n/u)) {
+    const line = rawLine.trim()
+
+    if (!line || line.startsWith('#')) {
+      continue
+    }
+
+    const separatorIndex = line.indexOf('=')
+    if (separatorIndex < 1) {
+      continue
+    }
+
+    const key = line.slice(0, separatorIndex).trim()
+    if (!/^[A-Za-z_][A-Za-z0-9_]*$/u.test(key)) {
+      continue
+    }
+
+    let value = line.slice(separatorIndex + 1).trim()
+    if (
+      (value.startsWith('"') && value.endsWith('"')) ||
+      (value.startsWith("'") && value.endsWith("'"))
+    ) {
+      value = value.slice(1, -1)
+    }
+
+    if (process.env[key] === undefined) {
+      process.env[key] = value
+    }
+  }
+}
+
+loadLocalEnv()
 
 const HOST = '0.0.0.0'
 const DEFAULT_PORT = 10000
@@ -23,6 +63,7 @@ const DIST_DIRECTORY = resolve(
 )
 const INDEX_FILE = resolve(DIST_DIRECTORY, 'index.html')
 const STARTED_AT = new Date()
+const ALLOWED_COURSES = new Set(['A', 'A1', 'BSS', 'BTĐ', 'C1'])
 
 const MIME_TYPES = new Map([
   ['.avif', 'image/avif'],
@@ -355,6 +396,10 @@ function validateRegistration(input) {
     required: true,
     maxLength: 100,
   })
+
+  if (course && !ALLOWED_COURSES.has(course)) {
+    errors.course = 'Vui lòng chọn hạng bằng hợp lệ.'
+  }
   const preferredTime = cleanText(
     input.preferredTime,
     'preferredTime',
@@ -566,6 +611,8 @@ async function forwardRegistration(data) {
         typeof result.message === 'string' && result.message.trim()
           ? result.message.trim().slice(0, 300)
           : 'Đăng ký thành công! Quốc Anh sẽ liên hệ tư vấn sớm nhất.',
+      duplicate: result.duplicate === true,
+      updated: result.updated === true,
     }
   } catch (error) {
     if (error instanceof HttpError) {
@@ -651,6 +698,8 @@ async function handleRegistration(request, response) {
       durationMs: Date.now() - startedAt,
       event: 'registration_forwarded',
       leadId: result.leadId,
+      duplicate: result.duplicate,
+      updated: result.updated,
     }),
   )
 
@@ -661,6 +710,8 @@ async function handleRegistration(request, response) {
       success: true,
       message: result.message,
       leadId: result.leadId,
+      duplicate: result.duplicate,
+      updated: result.updated,
     },
     rateLimit.headers,
   )

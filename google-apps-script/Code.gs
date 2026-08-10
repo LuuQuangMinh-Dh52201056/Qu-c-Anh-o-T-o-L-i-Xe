@@ -17,6 +17,8 @@ var CONFIG = Object.freeze({
   DEFAULT_NOTIFY_EMAILS: 'quang09minh02@gmail.com,hoclaixequocanh@gmail.com',
 });
 
+var ALLOWED_COURSES = Object.freeze(['A', 'A1', 'BSS', 'BTĐ', 'C1']);
+
 var HEADERS = Object.freeze([
   'Mã đăng ký',
   'Thời gian',
@@ -121,6 +123,7 @@ function doPost(e) {
     return jsonResponse_({
       success: true,
       duplicate: false,
+      updated: false,
       leadId: lead.leadId,
       row: rowNumber,
       notificationSent: notificationSent,
@@ -237,8 +240,8 @@ function validateAndBuildLead_(parameters) {
     }
   }
 
-  if (!course) {
-    throw new Error('Vui lòng chọn hạng bằng quan tâm.');
+  if (ALLOWED_COURSES.indexOf(course) === -1) {
+    throw new Error('Vui lòng chọn hạng bằng hợp lệ.');
   }
 
   return {

@@ -125,6 +125,8 @@ try {
     success: true,
     message: 'Đăng ký đã được ghi nhận thành công.',
     leadId,
+    duplicate: false,
+    updated: false,
   })
   assert.equal(receivedRequests.length, 1)
   assert.equal(receivedRequests[0].phone, '0879227614')
@@ -147,6 +149,21 @@ try {
     }),
   })
   assert.equal(invalidResponse.status, 422)
+  assert.equal(receivedRequests.length, 1)
+
+  const invalidCourseResponse = await fetch(
+    `${baseUrl}/api/registrations`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: 'Nguyễn Minh Anh',
+        phone: '0879227614',
+        course: 'B2',
+      }),
+    },
+  )
+  assert.equal(invalidCourseResponse.status, 422)
   assert.equal(receivedRequests.length, 1)
 
   const botResponse = await fetch(`${baseUrl}/api/registrations`, {
