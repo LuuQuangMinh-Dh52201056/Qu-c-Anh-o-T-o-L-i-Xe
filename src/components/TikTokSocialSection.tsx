@@ -1,340 +1,203 @@
-import {
-  ArrowUpRight,
-  CheckCircle2,
-  Film,
-  Sparkles,
-} from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowRight, ArrowUpRight, Facebook, Film, LoaderCircle, RefreshCw } from 'lucide-react'
+import { CONTACT } from '../data/contact'
+import { TikTokIcon } from './SocialIcons'
+import motorcycleVideo from '../anh/huongdanthiA,A1.mp4'
+import motorcyclePoster from '../anh/A1.webp'
 
-import {
-  useEffect,
-  useState,
-} from 'react'
+type FeedStatus = 'loading' | 'ready' | 'unavailable'
 
-import { Link } from 'react-router-dom'
+const EMBED_SCRIPT = 'https://www.tiktok.com/embed.js'
+const LOAD_TIMEOUT = 18000
+const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000
 
-const TIKTOK_PROFILE_URL =
-  'https://www.tiktok.com/@quoc.anh.dtlx.binhduong'
-
-const TIKTOK_USERNAME =
-  'quoc.anh.dtlx.binhduong'
-
-function TikTokIcon({
-  size = 28,
-}: {
-  size?: number
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
-      <path d="M14.5 3C14.9 5.2 16.2 6.7 18.5 7.1V10.2C16.9 10.2 15.6 9.7 14.5 8.9V15.1C14.5 18.3 11.9 21 8.6 21C5.3 21 2.8 18.4 2.8 15.1C2.8 11.9 5.4 9.2 8.7 9.2C9.1 9.2 9.5 9.2 9.9 9.3V12.5C9.5 12.3 9.1 12.2 8.7 12.2C7.1 12.2 5.8 13.5 5.8 15.1C5.8 16.7 7 18 8.6 18C10.2 18 11.5 16.7 11.5 15.1V3H14.5Z" />
-    </svg>
-  )
-}
-
-export default function TikTokSocialSection() {
-  const [embedReady, setEmbedReady] =
-    useState(false)
+function TikTokCreatorFeed() {
+  const cardRef = useRef<HTMLDivElement>(null)
+  const hostRef = useRef<HTMLDivElement>(null)
+  const [status, setStatus] = useState<FeedStatus>('loading')
+  const [attempt, setAttempt] = useState(0)
+  const statusRef = useRef(status)
+  statusRef.current = status
 
   useEffect(() => {
-    const previousScript =
-      document.getElementById(
-        'tiktok-creator-embed-script'
-      )
-
-    previousScript?.remove()
-
-    const script =
-      document.createElement('script')
-
-    script.id =
-      'tiktok-creator-embed-script'
-    script.src =
-      'https://www.tiktok.com/embed.js'
-    script.async = true
-
-    document.body.appendChild(script)
-
-    let embedCheckCount = 0
-    const embedCheckTimer =
-      window.setInterval(() => {
-        const iframe = document.querySelector(
-          '#mang-xa-hoi .tiktok-embed iframe'
-        ) as HTMLIFrameElement | null
-
-        const reportedHeight = Number.parseFloat(
-          iframe?.style.height ?? '0'
-        )
-
-        if (reportedHeight > 100) {
-          setEmbedReady(true)
-          window.clearInterval(
-            embedCheckTimer
-          )
-        }
-
-        embedCheckCount += 1
-
-        if (embedCheckCount >= 40) {
-          window.clearInterval(
-            embedCheckTimer
-          )
-        }
-      }, 500)
-
-    const scrollTimer = window.setTimeout(() => {
-      if (
-        window.location.hash ===
-        '#mang-xa-hoi'
-      ) {
-        document
-          .getElementById('mang-xa-hoi')
-          ?.scrollIntoView({
-            block: 'start',
-          })
+    const card = cardRef.current
+    if (!card) return
+    let inViewport = !('IntersectionObserver' in window)
+    const visibilityObserver = 'IntersectionObserver' in window
+      ? new IntersectionObserver(entries => {
+        inViewport = entries.some(entry => entry.isIntersecting)
+      })
+      : undefined
+    visibilityObserver?.observe(card)
+    const interval = setInterval(() => {
+      const activeElement = document.activeElement
+      const interactingWithFeed = activeElement instanceof HTMLIFrameElement && hostRef.current?.contains(activeElement)
+      if (inViewport && document.visibilityState === 'visible' && statusRef.current !== 'loading' && !interactingWithFeed) {
+        setAttempt(current => current + 1)
       }
-    }, 250)
-
+    }, AUTO_REFRESH_INTERVAL)
     return () => {
-      window.clearTimeout(scrollTimer)
-      window.clearInterval(embedCheckTimer)
-      script.remove()
+      visibilityObserver?.disconnect()
+      clearInterval(interval)
     }
   }, [])
 
-  return (
-    <section
-      id="mang-xa-hoi"
-      className="social-showcase-section"
-    >
-      <div className="social-showcase-pattern" />
-      <div className="social-showcase-glow social-showcase-glow--cyan" />
-      <div className="social-showcase-glow social-showcase-glow--pink" />
+  useEffect(() => {
+    const host = hostRef.current
+    if (!host) return
 
-      <div className="container social-showcase-container">
-        <div className="social-showcase-heading">
-          <span>
-            <Sparkles size={15} />
-            Mạng xã hội Quốc Anh Driving
-          </span>
+    let disposed = false
+    let started = false
+    let script: HTMLScriptElement | undefined
+    let timeout: ReturnType<typeof setTimeout> | undefined
+    let startTimer: ReturnType<typeof setTimeout> | undefined
+    const frames = new Map<HTMLIFrameElement, () => void>()
+    const loadedFrames = new Set<HTMLIFrameElement>()
+    setStatus('loading')
 
-          <h2>
-            Xem bài học thật.
-            <br />
-            Theo dõi hành trình thật.
-          </h2>
+    function markReady() {
+      if (disposed) return
+      if (timeout) clearTimeout(timeout)
+      setStatus('ready')
+    }
 
-          <p>
-            Video mới từ kênh TikTok chính thức được cập nhật
-            trực tiếp để học viên dễ hình dung trước khi đăng ký.
-          </p>
-        </div>
+    function inspectFrames() {
+      host?.querySelectorAll<HTMLIFrameElement>('iframe').forEach(frame => {
+        if (loadedFrames.has(frame) && frame.getBoundingClientRect().height >= 200) markReady()
+        if (frames.has(frame)) return
+        // React owns only the host; TikTok owns all markup inside it.
+        frame.title = 'Video mới từ TikTok Quốc Anh Đào Tạo Lái Xe'
+        const onLoad = () => {
+          if (frame.getAttribute('src') && frame.getAttribute('src') !== 'about:blank') {
+            loadedFrames.add(frame)
+            // The provider expands a working card after its iframe is ready.
+            // A browser error iframe stays collapsed and retains the fallback.
+            if (frame.getBoundingClientRect().height >= 200) markReady()
+          }
+        }
+        frames.set(frame, onLoad)
+        frame.addEventListener('load', onLoad)
+      })
+    }
 
-        <div className="social-showcase-grid">
-          <aside className="social-profile-card">
-            <div className="social-profile-card__logo">
-              <TikTokIcon size={31} />
-            </div>
+    const observer = new MutationObserver(inspectFrames)
 
-            <span className="social-profile-card__label">
-              Kênh TikTok chính thức
-            </span>
+    function onResourceError(event: Event) {
+      const resource = event.target
+      if (!(resource instanceof HTMLScriptElement || resource instanceof HTMLLinkElement)) return
+      const url = resource instanceof HTMLScriptElement ? resource.src : resource.href
+      // Remove a failed dependency so TikTok's cached loader can retry it.
+      // Successful provider resources are retained across route changes.
+      if (url.includes('/tiktok/falcon/embed/')) {
+        resource.remove()
+        if (!disposed) setStatus('unavailable')
+      }
+    }
 
-            <h3>
-              Quốc Anh
-              <br />
-              Đào tạo lái xe
-            </h3>
+    function start() {
+      if (started || disposed || !host) return
+      started = true
+      intersectionObserver?.disconnect()
+      host.replaceChildren()
 
-            <a
-              href={TIKTOK_PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-profile-card__handle"
-            >
-              @{TIKTOK_USERNAME}
-            </a>
+      const blockquote = document.createElement('blockquote')
+      blockquote.className = 'tiktok-embed'
+      blockquote.setAttribute('cite', CONTACT.tiktokProfileUrl)
+      blockquote.dataset.uniqueId = CONTACT.tiktokUsername
+      blockquote.dataset.embedType = 'creator'
+      blockquote.dataset.embedFrom = 'oembed'
+      blockquote.style.maxWidth = '100%'
+      blockquote.style.minWidth = '280px'
+      const section = document.createElement('section')
+      const profile = document.createElement('a')
+      profile.href = CONTACT.tiktokProfileUrl
+      profile.target = '_blank'
+      profile.rel = 'noopener noreferrer'
+      profile.textContent = `@${CONTACT.tiktokUsername}`
+      section.appendChild(profile)
+      blockquote.appendChild(section)
+      host.appendChild(blockquote)
 
-            <p>
-              Theo dõi để nhận video hướng dẫn thi,
-              mẹo xử lý bài và những buổi học thực tế mới nhất.
-            </p>
+      observer.observe(host, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'src'] })
+      document.addEventListener('error', onResourceError, true)
+      timeout = setTimeout(() => {
+        if (!disposed) setStatus(current => current === 'ready' ? current : 'unavailable')
+      }, LOAD_TIMEOUT)
 
-            <a
-              href={TIKTOK_PROFILE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="social-profile-card__follow"
-            >
-              <TikTokIcon size={19} />
-              Theo dõi trên TikTok
-              <ArrowUpRight size={17} />
-            </a>
+      // A fresh official loader scans the new blockquote on SPA mounts/retries.
+      // Deferring start lets React StrictMode clean up its trial effect first.
+      script = document.createElement('script')
+      script.src = EMBED_SCRIPT
+      script.async = true
+      script.dataset.linhXuanTikTok = 'creator'
+      script.onerror = () => {
+        if (!disposed) setStatus('unavailable')
+      }
+      script.onload = inspectFrames
+      document.body.appendChild(script)
+    }
 
-            <div className="social-profile-card__live">
-              <span />
-              Nội dung mới được cập nhật từ TikTok
-            </div>
-          </aside>
+    const intersectionObserver = 'IntersectionObserver' in window && attempt === 0
+      ? new IntersectionObserver(entries => {
+        if (entries.some(entry => entry.isIntersecting)) startTimer = setTimeout(start, 0)
+      }, { rootMargin: '300px 0px' })
+      : undefined
 
-          <div className="social-embed-card">
-            <div className="social-embed-card__bar">
-              <div>
-                <span />
-                <span />
-                <span />
-              </div>
+    if (intersectionObserver) intersectionObserver.observe(host)
+    else startTimer = setTimeout(start, 0)
 
-              <strong>
-                Video mới nhất
-              </strong>
+    return () => {
+      disposed = true
+      intersectionObserver?.disconnect()
+      observer.disconnect()
+      if (timeout) clearTimeout(timeout)
+      if (startTimer) clearTimeout(startTimer)
+      frames.forEach((listener, frame) => frame.removeEventListener('load', listener))
+      document.removeEventListener('error', onResourceError, true)
+      if (script) {
+        script.onload = null
+        script.onerror = null
+        script.remove()
+      }
+      host.replaceChildren()
+    }
+  }, [attempt])
 
-              <small>
-                TikTok Creator Feed
-              </small>
-            </div>
+  return <div ref={cardRef} className="tiktok-feed-card" data-testid="tiktok-feed" data-status={status}>
+    <div className="tiktok-feed-heading">
+      <div><span className="tiktok-feed-icon"><TikTokIcon size={21} /></span><div><h3>Góc học lái trên TikTok</h3><p>Video mới từ kênh Quốc Anh</p></div></div>
+      <button className="tiktok-refresh" type="button" onClick={() => setAttempt(current => current + 1)} disabled={status === 'loading'} aria-label="Tải lại video" title="Tải lại video"><RefreshCw size={17} /><span>Tải lại</span></button>
+    </div>
+    <div className="tiktok-feed-stage">
+      <div ref={hostRef} className="tiktok-embed-host" data-testid="tiktok-embed-host" />
+      {status === 'loading' && <div className="tiktok-feed-loading" role="status"><LoaderCircle size={30} /><strong>Đang tải video từ TikTok</strong><p>Khám phá những bài học và khoảnh khắc mới từ kênh.</p></div>}
+      {status === 'unavailable' && <div className="tiktok-feed-unavailable" role="status"><span className="tiktok-unavailable-icon"><TikTokIcon size={37} /></span><h4>TikTok chưa hiển thị video</h4><p>Bạn có thể mở kênh để xem video mới hoặc thử tải lại tại đây.</p><div><a className="tiktok-open-button" href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer">Mở kênh TikTok <ArrowUpRight size={17} /></a><button className="tiktok-retry-button" type="button" onClick={() => setAttempt(current => current + 1)}><RefreshCw size={16} />Tải lại video</button></div></div>}
+    </div>
+    <div className="tiktok-feed-footnote"><span>Video mới được cập nhật từ kênh TikTok Quốc Anh.</span><a href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer">Xem toàn bộ video <ArrowUpRight size={15} /></a></div>
+  </div>
+}
 
-            <div
-              className={`social-embed-card__content${
-                embedReady ? ' is-ready' : ''
-              }`}
-            >
-              {!embedReady && (
-                <div className="social-embed-fallback">
-                  <div className="social-embed-fallback__brand">
-                    <span>
-                      <TikTokIcon size={25} />
-                    </span>
-
-                    <div>
-                      <small>
-                        Nội dung thực tế mỗi tuần
-                      </small>
-                      <strong>
-                        Video mới từ Quốc Anh
-                      </strong>
-                    </div>
-                  </div>
-
-                  <div className="social-embed-fallback__previews">
-                    {[
-                      'Hướng dẫn thi A, A1',
-                      'Mẹo thi BSS, BTĐ, C1',
-                      'Buổi học thực tế',
-                    ].map((title, index) => (
-                      <a
-                        href={TIKTOK_PROFILE_URL}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        key={title}
-                      >
-                        <span>
-                          <Film size={19} />
-                        </span>
-                        <small>
-                          Video {String(index + 1).padStart(2, '0')}
-                        </small>
-                        <strong>{title}</strong>
-                        <i>
-                          Xem trên TikTok
-                          <ArrowUpRight size={13} />
-                        </i>
-                      </a>
-                    ))}
-                  </div>
-
-                  <p>
-                    TikTok đang tải nội dung mới nhất. Nếu trình duyệt
-                    chặn video nhúng, bạn vẫn có thể mở ngay kênh chính thức.
-                  </p>
-
-                  <a
-                    href={TIKTOK_PROFILE_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-embed-fallback__open"
-                  >
-                    Mở kênh TikTok Quốc Anh
-                    <ArrowUpRight size={17} />
-                  </a>
-                </div>
-              )}
-
-              <blockquote
-                className="tiktok-embed"
-                cite={TIKTOK_PROFILE_URL}
-                data-unique-id={TIKTOK_USERNAME}
-                data-embed-type="creator"
-                data-embed-from="oembed"
-                style={{
-                  maxWidth: '720px',
-                  minWidth: '288px',
-                  margin: '0 auto',
-                }}
-              >
-                <section>
-                  <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href={`${TIKTOK_PROFILE_URL}?refer=creator_embed`}
-                  >
-                    @{TIKTOK_USERNAME}
-                  </a>
-                </section>
-              </blockquote>
-            </div>
-          </div>
-
-          <aside className="social-learning-card">
-            <div className="social-learning-card__icon">
-              <Film size={25} />
-            </div>
-
-            <span>
-              Học trước qua video
-            </span>
-
-            <h3>
-              Biết trước bài thi,
-              tự tin hơn khi học
-            </h3>
-
-            <div className="social-learning-card__list">
-              <div>
-                <CheckCircle2 size={18} />
-                Video hướng dẫn bài thi
-              </div>
-
-              <div>
-                <CheckCircle2 size={18} />
-                Kinh nghiệm sa hình thực tế
-              </div>
-
-              <div>
-                <CheckCircle2 size={18} />
-                Khoảnh khắc cùng học viên
-              </div>
-            </div>
-
-            <Link
-              to="/dang-ky"
-              className="social-learning-card__register"
-            >
-              Đăng ký tư vấn
-              <ArrowUpRight size={17} />
-            </Link>
-
-            <small>
-              Tư vấn miễn phí theo nhu cầu và hạng xe.
-            </small>
-          </aside>
-        </div>
+export default function TikTokSocialSection() {
+  return <section className="section tiktok-section" id="mang-xa-hoi">
+    <div className="container">
+      <div className="section-heading section-heading-row"><div><span className="section-label">KẾT NỐI & KHÁM PHÁ</span><h2>Mỗi video, thêm một<br />kinh nghiệm cầm lái.</h2></div><p className="section-heading-aside">Theo dõi các bài hướng dẫn, hoạt động học lái và những khoảnh khắc thực tế trên kênh TikTok Quốc Anh.</p></div>
+      <div className="tiktok-section-grid">
+        <TikTokCreatorFeed />
+        <aside className="tiktok-side-column" aria-label="Kênh mạng xã hội và video hướng dẫn">
+          <a className="tiktok-channel-card" href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer">
+            <div className="tiktok-channel-top"><span className="tiktok-channel-platform"><TikTokIcon size={18} /> KÊNH TIKTOK</span><ArrowUpRight size={23} /></div>
+            <div className="tiktok-channel-brand"><span><TikTokIcon size={28} /></span><div>QUỐC ANH<small>ĐÀO TẠO LÁI XE</small></div></div>
+            <h3>Học lái gần hơn.<br />Trải nghiệm nhiều hơn.</h3>
+            <p>@{CONTACT.tiktokUsername}</p>
+            <span className="tiktok-channel-cta">Theo dõi kênh <ArrowRight size={18} /></span>
+          </a>
+          <a className="tiktok-facebook-card" href={CONTACT.facebookUrl} target="_blank" rel="noopener noreferrer"><span className="tiktok-facebook-icon"><Facebook size={24} /></span><div><span>CÙNG KẾT NỐI</span><h3>Ghé thăm Facebook</h3><p>Hoạt động & thông tin tuyển sinh</p></div><ArrowUpRight size={20} /></a>
+          <article className="tiktok-tutorial-card">
+            <div className="tiktok-tutorial-media"><video controls preload="none" playsInline poster={motorcyclePoster} aria-label="Video hướng dẫn thi sát hạch hạng A và A1"><source src={motorcycleVideo} type="video/mp4" />Trình duyệt chưa hỗ trợ phát video. <a href={motorcycleVideo}>Mở video hướng dẫn</a></video><span><Film size={14} /> VIDEO HƯỚNG DẪN</span></div>
+            <div className="tiktok-tutorial-copy"><h3>Làm quen bài thi A & A1</h3><p>Xem trước bài thực hành để tự tin hơn khi đến sân tập.</p></div>
+          </article>
+        </aside>
       </div>
-    </section>
-  )
+    </div>
+  </section>
 }

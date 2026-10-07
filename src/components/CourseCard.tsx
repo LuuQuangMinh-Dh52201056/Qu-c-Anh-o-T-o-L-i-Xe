@@ -1,105 +1,66 @@
-import {
-  ArrowRight,
-  CheckCircle2,
-  GraduationCap,
-  ShieldCheck,
-} from 'lucide-react'
-
+﻿import { ArrowRight, ArrowUpRight, Bike, CarFront, MessageCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { Truck } from 'lucide-react'
 
 import type { Course } from '../types/course'
+import { CONTACT } from '../data/contact'
 
 type CourseCardProps = {
   course: Course
 }
 
-export default function CourseCard({
-  course,
-}: CourseCardProps) {
+export default function CourseCard({ course }: CourseCardProps) {
+  const isMotorcycle = course.code === 'A' || course.code === 'A1'
+  const VehicleIcon = isMotorcycle ? Bike : course.code === 'C1' ? Truck : CarFront
+
   return (
-    <article className="vehicle-course-card">
+    <article className={`course-card${isMotorcycle ? ' course-card--motorcycle' : ''}`}>
       <Link
         to={`/khoa-hoc/${course.slug}`}
-        className="vehicle-course-card__media"
-        data-course={course.code}
-        aria-label={`Xem chi tiết ${course.title}`}
+        className="course-card__media"
+        aria-label={`Xem khóa học ${course.title}`}
       >
-        <div className="vehicle-course-card__spotlight" />
-
         <img
           src={course.image}
-          alt={`${course.title} - ${course.subtitle}`}
+          alt={`${course.title} – ${course.subtitle}`}
           loading="lazy"
           decoding="async"
         />
-
-        <div className="vehicle-course-card__status">
-          <ShieldCheck size={15} />
-          Khóa đào tạo
-        </div>
-
-        <div className="vehicle-course-card__code">
-          <span>Hạng</span>
-          <strong>{course.code}</strong>
-        </div>
+        <span className="course-card__badge">
+          <VehicleIcon size={14} aria-hidden="true" />
+          {isMotorcycle ? 'Xe máy' : course.code === 'C1' ? 'Xe tải' : 'Ô tô'}
+        </span>
+        <span className="course-card__image-link" aria-hidden="true">
+          <ArrowUpRight size={19} />
+        </span>
       </Link>
 
-      <div className="vehicle-course-card__content">
-        <div className="vehicle-course-card__topline">
-          <span>
-            <GraduationCap size={15} />
-            Chương trình đào tạo
-          </span>
-          <strong>{course.code}</strong>
-        </div>
-
-        <h4>{course.title}</h4>
-        <p className="vehicle-course-card__subtitle">
-          {course.subtitle}
-        </p>
-
-        <p className="vehicle-course-card__summary">
-          {course.summary}
-        </p>
-
-        <div className="vehicle-course-card__price">
-          <div>
-            <span>Học phí tham khảo</span>
-            <strong>{course.price}</strong>
-          </div>
-
-          <small>
-           ✔️ Cam kết không phát sinh
-          </small>
-        </div>
-
-        <div className="vehicle-course-card__benefits">
-          {course.bullets.map((item) => (
-            <div key={item}>
-              <CheckCircle2 size={16} />
-              <span>{item}</span>
-            </div>
-          ))}
+      <div className="course-card__body">
+        <div className="course-card__category">KHÓA HỌC LÁI XE</div>
+        <h3>
+          <Link to={`/khoa-hoc/${course.slug}`}>{course.title}</Link>
+        </h3>
+        <p className="course-card__subtitle">{course.subtitle}</p>
+        <p className="course-card__summary">{course.summary}</p>
+        <div className="course-card__price">
+          <span>Học phí tham khảo</span>
+          <strong>{course.price}</strong>
         </div>
       </div>
 
-      <footer className="vehicle-course-card__actions">
-        <Link
-          to={`/khoa-hoc/${course.slug}`}
-          className="vehicle-course-card__detail"
-        >
-          Xem chi tiết
-          <ArrowRight size={16} />
+      <footer className="course-card__actions">
+        <Link to={`/khoa-hoc/${course.slug}`} className="course-card__detail">
+          Xem khóa học <ArrowRight size={16} aria-hidden="true" />
         </Link>
-
-        <Link
-          to={`/dang-ky?course=${encodeURIComponent(
-            course.code
-          )}`}
-          className="vehicle-course-card__register"
+        <a
+          href={CONTACT.zaloUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="course-card__chat"
+          aria-label={`Chat Zalo với admin về khóa ${course.title}`}
         >
-          Đăng ký học
-        </Link>
+          <MessageCircle size={16} aria-hidden="true" /> Zalo
+        </a>
       </footer>
     </article>
   )

@@ -1,0 +1,150 @@
+import { expect, test } from '@playwright/test'
+import { mkdir } from 'node:fs/promises'
+
+test('desktop: browse courses and open real admin contact channels', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', error => errors.push(error.message))
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Vững tay lái.')
+  await expect(page.locator('form')).toHaveCount(0)
+  await expect(page.locator('.course-card')).toHaveCount(5)
+  await page.getByRole('button', { name: 'Xe máy', exact: true }).click()
+  await expect(page.locator('.course-card')).toHaveCount(2)
+  await page.getByRole('button', { name: 'Ô tô', exact: true }).click()
+  await expect(page.locator('.course-card')).toHaveCount(3)
+  await page.getByRole('button', { name: 'Tất cả khóa học', exact: true }).click()
+  await expect(page.locator('.course-card')).toHaveCount(5)
+  await expect(page.getByRole('link', { name: 'Chat Zalo với admin', exact: true })).toHaveAttribute('href', 'https://zalo.me/0879227614')
+  await expect(page.getByRole('link', { name: 'Facebook Quốc Anh', exact: true }).first()).toHaveAttribute('href', 'https://www.facebook.com/quocanh.truong.790693')
+  await expect(page.getByRole('link', { name: 'TikTok Quốc Anh', exact: true }).first()).toHaveAttribute('href', 'https://www.tiktok.com/@quoc.anh.dtlx.binhduong?is_from_webapp=1&sender_device=pc')
+  await page.getByRole('button', { name: 'Mở khung chat với admin' }).filter({ visible: true }).click()
+  const panel = page.getByRole('dialog', { name: 'Trò chuyện với admin' })
+  await expect(panel).toBeVisible()
+  await expect(panel.getByRole('link', { name: /Chat qua Zalo/ })).toHaveAttribute('href', 'https://zalo.me/0879227614')
+  await expect(panel.getByRole('link', { name: /Chat qua Messenger/ })).toHaveAttribute('href', 'https://m.me/quocanh.truong.790693')
+  await expect(panel.getByRole('link', { name: /Gọi trực tiếp/ })).toHaveAttribute('href', 'tel:0879227614')
+  await page.keyboard.press('Escape')
+  await expect(panel).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Mở khung chat với admin' }).filter({ visible: true })).toBeFocused()
+  const faq = page.locator('.faq-item').filter({ hasText: 'Chưa biết lái xe' })
+  await faq.locator('summary').click()
+  await expect(faq).toHaveAttribute('open', '')
+  await expect(page.locator('video')).toHaveAttribute('preload', 'none')
+  expect(errors).toEqual([])
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  await mkdir('artifacts', { recursive: true })
+  await page.screenshot({ path: 'artifacts/home-desktop.png' })
+})
+
+test('mobile: navigation, chat, filters and pages fit the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  await expect(page.locator('.mobile-contact-bar')).toBeVisible()
+  await page.getByRole('button', { name: 'Mở menu', exact: true }).click()
+  await expect(page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' })).toBeVisible()
+  await page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' }).getByRole('link', { name: 'Khóa học', exact: true }).click()
+  await expect(page).toHaveURL(/\/khoa-hoc$/)
+  await expect(page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' })).toHaveCount(0)
+  await page.getByRole('button', { name: 'Xe máy', exact: true }).click()
+  await expect(page.locator('.course-card')).toHaveCount(2)
+  await page.getByRole('button', { name: 'Mở khung chat với admin' }).filter({ visible: true }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  const bounds = await page.getByRole('dialog').boundingBox()
+  expect(bounds).not.toBeNull()
+  expect(bounds!.x).toBeGreaterThanOrEqual(0)
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(390)
+  expect(bounds!.y).toBeGreaterThanOrEqual(0)
+  await page.getByRole('button', { name: 'Đóng khung liên hệ' }).click()
+  for (const route of ['/', '/khoa-hoc', '/lien-he', '/khoa-hoc/hang-a1', '/khoa-hoc/hang-b-tu-dong']) {
+    await page.goto(route)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+    await expect(page.locator('form')).toHaveCount(0)
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+  }
+  await page.goto('/')
+  await page.evaluate(() => document.fonts.ready)
+  await mkdir('artifacts', { recursive: true })
+  await page.screenshot({ path: 'artifacts/home-mobile.png' })
+})
+
+test('all detail pages, old registration redirect and missing pages work', async ({ page }) => {
+  for (const slug of ['hang-a', 'hang-a1', 'hang-b-so-san', 'hang-b-tu-dong', 'hang-c1']) {
+    await page.goto('/khoa-hoc/' + slug)
+    await expect(page.locator('.course-detail__intro h1')).toBeVisible()
+    await expect(page.locator('.course-detail__contact-card').getByRole('link', { name: 'Chat Zalo với admin' })).toHaveAttribute('href', 'https://zalo.me/0879227614')
+    await expect(page.locator('form')).toHaveCount(0)
+  }
+  await page.goto('/dang-ky')
+  await expect(page).toHaveURL(/\/lien-he$/)
+  await expect(page.locator('.contact-channels a')).toHaveCount(3)
+  await expect(page.locator('.contact-location')).toContainText('Đường Số 1, Khu Phố 4, Phường Linh Xuân, Thủ Đức, Thành Phố Hồ Chí Minh')
+  await expect(page.locator('form')).toHaveCount(0)
+  await page.goto('/khoa-hoc/khong-ton-tai')
+  await expect(page.getByRole('heading', { name: 'Chưa tìm thấy khóa học này.' })).toBeVisible()
+  await page.goto('/khong-ton-tai')
+  await expect(page.getByRole('heading', { name: 'Hãy tiếp tục hành trình.' })).toBeVisible()
+})
+
+test('office identity, logo and vehicle frames preserve the supplied content', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 1000 })
+  await page.goto('/')
+  await expect(page).toHaveTitle(/Văn Phòng Tư Vấn Tuyển Sinh Linh Xuân/)
+  await expect(page.locator('.site-header .brand-text')).toContainText('LINH XUÂN')
+  await expect(page.locator('.site-header .brand-lockup img')).toHaveAttribute('src', '/logo-linh-xuan.png')
+  const styles = await page.locator('.course-card__media img').evaluateAll(images => images.map(image => getComputedStyle(image).objectFit))
+  expect(styles).toEqual(['contain', 'contain', 'contain', 'contain', 'contain'])
+  await page.goto('/khoa-hoc/hang-b-tu-dong')
+  await expect(page.locator('.course-detail__image img')).toHaveCSS('object-fit', 'contain')
+  await page.goto('/lien-he')
+  await expect(page.locator('.contact-map-frame iframe')).toHaveAttribute('src', 'https://www.google.com/maps?q=10.870442%2C106.765795&z=18&output=embed')
+  await expect(page.locator('.contact-map-label')).toHaveAttribute('href', 'https://maps.app.goo.gl/bf62B1T8RFGcrDyYA')
+})
+
+test('TikTok creator feed loads, refreshes and survives returning to the homepage', async ({ page }) => {
+  await page.clock.install()
+  await page.route('https://www.tiktok.com/embed.js', route => route.fulfill({
+    contentType: 'text/javascript',
+    body: `window.__feedMockCount = (window.__feedMockCount || 0) + 1;
+      document.querySelectorAll('blockquote.tiktok-embed').forEach(host => {
+        const frame = document.createElement('iframe');
+        frame.dataset.refresh = String(window.__feedMockCount);
+        frame.src = 'data:text/html,' + encodeURIComponent('<html><body><p>Video từ kênh TikTok</p></body></html>');
+        frame.style.width = '100%'; frame.style.height = '480px';
+        host.appendChild(frame);
+      });`,
+  }))
+  await page.goto('/')
+  const feed = page.getByTestId('tiktok-feed')
+  await feed.scrollIntoViewIfNeeded()
+  await expect(feed).toHaveAttribute('data-status', 'ready')
+  await expect(page.getByTestId('tiktok-embed-host').locator('blockquote')).toHaveAttribute('data-unique-id', 'quoc.anh.dtlx.binhduong')
+  await expect(page.getByTestId('tiktok-embed-host').locator('blockquote')).toHaveAttribute('data-embed-type', 'creator')
+  const firstRefresh = await page.getByTestId('tiktok-embed-host').locator('iframe').getAttribute('data-refresh')
+  await page.locator('.tiktok-refresh').click()
+  await expect(feed).toHaveAttribute('data-status', 'ready')
+  await expect(page.getByTestId('tiktok-embed-host').locator('iframe')).not.toHaveAttribute('data-refresh', firstRefresh!)
+  const beforeAutomaticRefresh = await page.getByTestId('tiktok-embed-host').locator('iframe').getAttribute('data-refresh')
+  await page.clock.fastForward(5 * 60 * 1000)
+  await expect(feed).toHaveAttribute('data-status', 'ready')
+  await expect(page.getByTestId('tiktok-embed-host').locator('iframe')).not.toHaveAttribute('data-refresh', beforeAutomaticRefresh!)
+  await page.goto('/lien-he')
+  await page.goto('/')
+  await feed.scrollIntoViewIfNeeded()
+  await expect(feed).toHaveAttribute('data-status', 'ready')
+  await expect(page.getByTestId('tiktok-embed-host').locator('iframe')).toHaveCount(1)
+})
+
+test('TikTok failure offers a real channel link and a working retry', async ({ page }) => {
+  await page.route('https://www.tiktok.com/embed.js', route => route.abort())
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const feed = page.getByTestId('tiktok-feed')
+  await feed.scrollIntoViewIfNeeded()
+  await expect(feed).toHaveAttribute('data-status', 'unavailable')
+  await expect(feed.getByRole('link', { name: 'Mở kênh TikTok' })).toHaveAttribute('href', 'https://www.tiktok.com/@quoc.anh.dtlx.binhduong?is_from_webapp=1&sender_device=pc')
+  await page.locator('.tiktok-retry-button').click()
+  await expect(feed).toHaveAttribute('data-status', 'unavailable')
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})

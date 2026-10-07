@@ -1,171 +1,79 @@
-﻿import {
-  Facebook,
-  MapPin,
-  Menu,
-  Phone,
-  Search,
-  X,
-  Youtube,
-} from 'lucide-react'
+﻿import { useEffect, useRef, useState } from 'react'
+import { Facebook, MapPin, Menu, Phone, X } from 'lucide-react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
+import { CONTACT } from '../data/contact'
+import { TikTokIcon } from './SocialIcons'
 
-import {
-  Link,
-  NavLink,
-} from 'react-router-dom'
-
-import { useState } from 'react'
-
-const logo = new URL(
-  '../anh/anhLOGO.png',
-  import.meta.url
-).href
+const logo = '/logo-linh-xuan.png'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
+  const headerRef = useRef<HTMLElement>(null)
+  const toggleRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => { setOpen(false) }, [location.pathname, location.hash])
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        toggleRef.current?.focus()
+      }
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.target instanceof Node && !headerRef.current?.contains(event.target)) setOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('pointerdown', onPointerDown)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('pointerdown', onPointerDown)
+    }
+  }, [open])
+
+  const navigation = (
+    <>
+      <NavLink to="/" end onClick={() => setOpen(false)}>Trang chủ</NavLink>
+      <NavLink to="/khoa-hoc" onClick={() => setOpen(false)}>Khóa học</NavLink>
+      <Link to="/#gioi-thieu" onClick={() => setOpen(false)}>Văn phòng</Link>
+      <Link to="/#mang-xa-hoi" onClick={() => setOpen(false)}>Góc học lái xe</Link>
+      <NavLink to="/lien-he" onClick={() => setOpen(false)}>Liên hệ</NavLink>
+    </>
+  )
 
   return (
     <>
-      {/* TOP BAR */}
-      <div className="top-bar">
-        <div className="container top-bar-inner">
-
-          <div className="top-address">
-            <MapPin size={13} />
-
-            <span>
-              300 Đ. Vành Đai Đhqg Hcm, KP, Đông Hòa, Hồ Chí Minh, Việt Nam   
-            </span>
+      <div className="site-topbar">
+        <div className="container topbar-inner">
+          <a className="topbar-location" href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer">
+            <MapPin size={13} /><span>Linh Xuân, Thủ Đức · TP. Hồ Chí Minh</span>
+          </a>
+          <span className="topbar-message">Tư vấn rõ ràng · Đồng hành cùng học viên</span>
+          <div className="topbar-links">
+            <a href={CONTACT.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook Quốc Anh"><Facebook size={14} /><span>Facebook</span></a>
+            <a href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer" aria-label="TikTok Quốc Anh"><TikTokIcon size={14} /><span>TikTok</span></a>
           </div>
-
-          <div className="top-social">
-            <span>
-              Hotline: 0879 227 614
-            </span>
-
-            <Facebook size={14} />
-            <Youtube size={14} />
-          </div>
-
         </div>
       </div>
-
-      {/* MAIN HEADER */}
-      <header className="main-header">
-
-        <div className="container main-header-inner">
-
-          <Link
-            to="/"
-            className="main-logo"
-          >
-            <img
-              src={logo}
-              alt="Quốc Anh - Giáo viên đào tạo lái xe"
-            />
+      <header className="site-header" ref={headerRef}>
+        <div className="container header-inner">
+          <Link to="/" className="brand-lockup" aria-label={`${CONTACT.brandName} — Trang chủ`} onClick={() => setOpen(false)}>
+            <img src={logo} alt="" width="104" height="52" />
+            <span className="brand-text"><small>VĂN PHÒNG TƯ VẤN TUYỂN SINH</small><strong>LINH XUÂN</strong></span>
           </Link>
-
-          <div className="header-contact">
-
-            <div className="header-contact-item">
-
-              <Phone size={23} />
-
-              <div>
-                <small>
-                  Hotline tư vấn
-                </small>
-
-                <strong>
-                  0879 227 614
-                </strong>
-              </div>
-
-            </div>
-
-            <div className="header-search">
-
-              <input
-                type="text"
-                placeholder="Tìm kiếm khóa học..."
-              />
-
-              <button
-                type="button"
-                aria-label="Tìm kiếm"
-              >
-                <Search size={17} />
-              </button>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </header>
-
-      {/* NAVIGATION */}
-      <div className="navigation">
-
-        <div className="container navigation-inner">
-
-          <nav
-            className={`navigation-menu ${
-              open ? 'open' : ''
-            }`}
-          >
-
-            <NavLink to="/">
-              Trang chủ
-            </NavLink>
-
-            <NavLink to="/khoa-hoc">
-              Các khóa học
-            </NavLink>
-
-            <a href="/#lo-trinh">
-              Chương trình đào tạo
-            </a>
-
-            <a href="/#mang-xa-hoi">
-              Video học lái xe
-            </a>
-
-            <NavLink to="/dang-ky">
-              Đăng ký học
-            </NavLink>
-
-            <NavLink to="/lien-he">
-              Liên hệ
-            </NavLink>
-
-          </nav>
-
-          <Link
-            to="/dang-ky"
-            className="nav-register"
-          >
-            Đăng ký ngay
-          </Link>
-
-          <button
-            type="button"
-            className="navigation-mobile-button"
-            onClick={() =>
-              setOpen(
-                previous => !previous
-              )
-            }
-          >
-            {open
-              ? <X size={23} />
-              : <Menu size={23} />
-            }
+          <nav className="desktop-nav" aria-label="Điều hướng chính">{navigation}</nav>
+          <a href={CONTACT.phoneUrl} className="header-hotline" aria-label={`Gọi tư vấn ${CONTACT.phoneDisplay}`}><Phone size={18} /><span><small>HOTLINE TƯ VẤN</small><strong>{CONTACT.phoneDisplay}</strong></span></a>
+          <button ref={toggleRef} type="button" className="mobile-menu-toggle" aria-label={open ? 'Đóng menu' : 'Mở menu'} aria-expanded={open} aria-controls="mobile-navigation" onClick={() => setOpen(value => !value)}>
+            {open ? <X size={24} /> : <Menu size={24} />}
           </button>
-
         </div>
-
-      </div>
+        {open && <nav id="mobile-navigation" className="mobile-nav" aria-label="Điều hướng trên điện thoại">
+          {navigation}
+          <a className="mobile-nav-contact" href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}>Chat với admin qua Zalo</a>
+        </nav>}
+      </header>
     </>
   )
 }

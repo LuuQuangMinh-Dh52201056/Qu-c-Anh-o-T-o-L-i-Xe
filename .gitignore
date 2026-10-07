@@ -4,3 +4,6 @@ dist
 .env.server
 .vscode
 .DS_Store
+artifacts/
+test-results/
+playwright-report/

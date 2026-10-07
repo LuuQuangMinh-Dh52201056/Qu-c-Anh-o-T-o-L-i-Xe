@@ -1,108 +1,51 @@
-import {
-  Bike,
-  CarFront,
-  Sparkles,
-} from 'lucide-react'
+﻿import { useState } from 'react'
+import { Bike, CarFront, LayoutGrid } from 'lucide-react'
 
 import CourseCard from './CourseCard'
-import EnrollmentSchedule from './EnrollmentSchedule'
-
 import { courses } from '../data/courses'
 
-import type { Course } from '../types/course'
+type CourseFilter = 'all' | 'motorcycle' | 'car'
 
-type CourseGroup = {
-  id: string
-  number: string
-  eyebrow: string
-  title: string
-  description: string
-  codes: Course['code'][]
-  icon: typeof Bike
-  theme: 'motorcycle' | 'car'
-}
-
-const courseGroups: CourseGroup[] = [
-  {
-    id: 'hoc-mo-to',
-    number: '01',
-    eyebrow: 'Nhóm xe hai bánh',
-    title: 'Học lái mô tô',
-    description:
-      'Làm chủ kỹ năng điều khiển xe hai bánh, nắm chắc bài thi và tự tin xử lý các tình huống giao thông thực tế.',
-    codes: ['A', 'A1'],
-    icon: Bike,
-    theme: 'motorcycle',
-  },
-  {
-    id: 'hoc-o-to-xe-tai',
-    number: '02',
-    eyebrow: 'Nhóm xe bốn bánh',
-    title: 'Học lái ô tô & xe tải',
-    description:
-      'Lộ trình từ thao tác cơ bản đến sa hình và đường trường dành cho ô tô số sàn, số tự động và xe tải C1.',
-    codes: ['BSS', 'BTĐ', 'C1'],
-    icon: CarFront,
-    theme: 'car',
-  },
+const filters = [
+  { value: 'all' as const, label: 'Tất cả khóa học', icon: LayoutGrid },
+  { value: 'motorcycle' as const, label: 'Xe máy', icon: Bike },
+  { value: 'car' as const, label: 'Ô tô', icon: CarFront },
 ]
 
-export default function CourseGroups() {
+export default function CourseGroups({ showFilters = true }: { showFilters?: boolean }) {
+  const [activeFilter, setActiveFilter] = useState<CourseFilter>('all')
+  const visibleCourses = courses.filter((course) => {
+    const isMotorcycle = course.code === 'A' || course.code === 'A1'
+    return activeFilter === 'all' || (activeFilter === 'motorcycle' ? isMotorcycle : !isMotorcycle)
+  })
+
   return (
-    <div className="vehicle-course-catalog">
-      <EnrollmentSchedule />
+    <div className="course-catalog">
+      {showFilters && (
+        <div className="course-catalog__toolbar">
+          <div className="course-catalog__filters" role="group" aria-label="Lọc khóa học theo phương tiện">
+            {filters.map(({ value, label, icon: Icon }) => (
+              <button
+                type="button"
+                className={activeFilter === value ? 'is-active' : ''}
+                aria-pressed={activeFilter === value}
+                onClick={() => setActiveFilter(value)}
+                key={value}
+              >
+                <Icon size={16} aria-hidden="true" />
+                {label}
+              </button>
+            ))}
+          </div>
+          <p className="course-catalog__count" aria-live="polite" aria-atomic="true">
+            <strong>{visibleCourses.length}</strong> khóa học phù hợp
+          </p>
+        </div>
+      )}
 
-      {courseGroups.map((group) => {
-        const Icon = group.icon
-        const groupCourses = courses.filter(
-          (course) => group.codes.includes(course.code)
-        )
-
-        return (
-          <section
-            className={`vehicle-course-group vehicle-course-group--${group.theme}`}
-            id={group.id}
-            key={group.id}
-          >
-            <div className="vehicle-course-group__glow" />
-
-            <header className="vehicle-course-group__header">
-              <div className="vehicle-course-group__identity">
-                <div className="vehicle-course-group__icon">
-                  <Icon size={28} />
-                </div>
-
-                <div>
-                  <div className="vehicle-course-group__eyebrow">
-                    <Sparkles size={13} />
-                    {group.eyebrow}
-                  </div>
-
-                  <h3>{group.title}</h3>
-                  <p>{group.description}</p>
-                </div>
-              </div>
-
-              <div className="vehicle-course-group__count">
-                <strong>{String(groupCourses.length).padStart(2, '0')}</strong>
-                <span>Hạng đào tạo</span>
-                <small>Nhóm {group.number}</small>
-              </div>
-            </header>
-
-            <div
-              className={`vehicle-course-grid vehicle-course-grid--${groupCourses.length}`}
-            >
-              {groupCourses.map((course) => (
-                <CourseCard
-                  course={course}
-                  key={course.code}
-                />
-              ))}
-            </div>
-          </section>
-        )
-      })}
+      <div className="course-catalog__grid">
+        {visibleCourses.map((course) => <CourseCard course={course} key={course.code} />)}
+      </div>
     </div>
   )
 }
