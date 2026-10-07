@@ -1,0 +1,111 @@
+/* Compact blue-and-white navigation and the full contact footer. */
+.site-topbar { display: none; }
+.site-header { background: #fffffffa; border-bottom: 1px solid #dae7f8; box-shadow: 0 5px 20px #12396804; }
+.site-header .header-inner { height: 78px; gap: 22px; }
+.site-header .brand-lockup { gap: 10px; }
+.site-header .brand-lockup img { width: 83px; height: 44px; }
+.site-header .brand-text { gap: 3px; }
+.site-header .brand-text small { font-size: 8px; letter-spacing: .015em; color: #506b95; }
+.site-header .brand-text strong { font-size: 23px; letter-spacing: .02em; color: #082c69; }
+.site-header .desktop-nav { justify-content: center; gap: 17px; }
+.site-header .desktop-nav a { font-size: 12px; font-weight: 500; color: #244672; }
+.site-header .desktop-nav a.active { font-weight: 700; color: #0754cf; }
+.site-header .desktop-nav a:hover { color: #0754cf; }
+.site-header .desktop-nav a::after { height: 3px; }
+.site-header .header-hotline { min-height: 47px; padding: 8px 15px; gap: 9px; color: #fff; background: #0754cf; border: 1px solid #0754cf; border-radius: 18px; box-shadow: 0 5px 16px #0754cf26; }
+.site-header .header-hotline:hover { background: #0345b1; border-color: #0345b1; }
+.site-header .header-hotline small { font-size: 9px; letter-spacing: .02em; color: #d4e5ff; }
+.site-header .header-hotline strong { font-size: 13px; line-height: 1.35; }
+
+.site-footer { position: relative; overflow: hidden; padding-top: 36px; border-top: 1px solid #204986; background: radial-gradient(ellipse at 95% 0, #0d418930, transparent 50%), linear-gradient(112deg, #062758, #051f4b 65%, #082b67); border-radius: 18px 18px 0 0; }
+.site-footer::before { content: ''; pointer-events: none; position: absolute; width: 440px; height: 440px; right: -270px; top: -160px; border: 55px solid #216bdd0a; border-radius: 50%; }
+.site-footer .footer-grid { position: relative; grid-template-columns: 1.22fr .72fr .8fr 1.35fr; gap: 32px; padding-bottom: 31px; }
+.site-footer .footer-logo { margin-bottom: 15px; gap: 10px; }
+.site-footer .footer-logo img { width: 79px; height: 48px; padding: 5px; border-radius: 7px; background: #fff; }
+.site-footer .footer-logo .brand-text { gap: 3px; }
+.site-footer .footer-logo .brand-text small { font-size: 8px; letter-spacing: .015em; color: #c6dbff; }
+.site-footer .footer-logo .brand-text strong { font-size: 21px; letter-spacing: .02em; color: #fff; }
+.site-footer .footer-brand > p { max-width: 280px; margin-bottom: 0; color: #b4cae9; font-size: 12px; line-height: 1.9; }
+.site-footer .footer-social-links { gap: 9px; margin-top: 17px; }
+.site-footer .footer-social-links a { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #ffffff1d; background: #12447e; }
+.site-footer .footer-social-links a:hover { background: #0754cf; border-color: #5194ed; }
+.site-footer .footer-social-links svg { width: 17px; height: 17px; }
+.site-footer .footer-column h3 { color: #fff; font-size: 13px; margin: 4px 0 15px; font-weight: 700; }
+.site-footer .footer-links { gap: 6px; }
+.site-footer .footer-links a { color: #b4cae9; font-size: 12px; line-height: 1.8; }
+.site-footer .footer-links a:hover { color: #fff; }
+.site-footer .footer-contact-list { gap: 12px; }
+.site-footer .footer-contact-item { gap: 10px; font-size: 12px; line-height: 1.8; color: #c3d4ee; }
+.site-footer .footer-contact-item > svg { width: 16px; height: 16px; color: #c3dcff; margin-top: 2px; }
+.site-footer .footer-contact-item strong { margin-top: 2px; font-size: 15px; letter-spacing: 0; }
+.site-footer .footer-contact-item small { font-size: 10px; }
+.site-footer .footer-contact-item:hover { color: #fff; }
+.site-footer .footer-zalo-badge { display: flex; align-items: center; gap: 9px; width: fit-content; max-width: 100%; margin-top: 16px; padding: 11px 12px; color: #0754cf; border-radius: 9px; background: #fff; transition: background .2s; }
+.site-footer .footer-zalo-badge > span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.site-footer .footer-zalo-badge strong { font-size: 12px; line-height: 1.5; font-weight: 700; }
+.site-footer .footer-zalo-badge small { color: #617da1; font-size: 10px; line-height: 1.5; }
+.site-footer .footer-zalo-badge:hover { background: #edf5ff; }
+.site-footer .footer-zalo-badge > svg:last-child { margin-left: 5px; }
+.site-footer .footer-bottom { border-top: 1px solid #ffffff12; }
+.site-footer .footer-bottom-inner { min-height: 49px; color: #94aed3; font-size: 10px; }
+
+@media (min-width: 1101px) and (max-width: 1250px) {
+  .site-header .header-inner { gap: 16px; }
+  .site-header .desktop-nav { gap: 13px; }
+  .site-header .desktop-nav a { font-size: 11px; }
+  .site-header .brand-lockup img { width: 76px; }
+  .site-header .brand-text strong { font-size: 21px; }
+  .site-header .header-hotline { padding-inline: 12px; }
+}
+
+@media (max-width: 1100px) {
+  .site-header .header-inner { height: 76px; }
+  .site-header .desktop-nav { display: none; }
+  .site-header .header-hotline { margin-left: auto; }
+  .site-header .mobile-menu-toggle { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 9px; background: #f2f7ff; }
+  .site-header .mobile-nav { display: flex; flex-direction: column; position: absolute; inset: 100% 0 auto; background: #fff; border-bottom: 1px solid #d8e4f5; box-shadow: 0 14px 25px #082c6912; padding: 8px 28px 20px; max-height: calc(100dvh - 76px); overflow-y: auto; }
+  .site-header .mobile-nav > a { padding-block: 12px; }
+  .site-header .mobile-nav > .mobile-nav-contact { padding: 12px 16px; margin-top: 15px; }
+  .site-footer .footer-grid { gap: 25px; }
+}
+
+@media (max-width: 900px) {
+  .site-footer .footer-grid { grid-template-columns: 1.15fr 1fr; gap: 30px 38px; }
+  .site-footer .footer-logo .brand-text strong { font-size: 23px; }
+  .site-footer .footer-brand > p { font-size: 12px; }
+  .site-footer .footer-column h3 { font-size: 13px; }
+  .site-footer .footer-links a, .site-footer .footer-contact-item { font-size: 12px; }
+}
+
+@media (max-width: 640px) {
+  .site-header .header-inner { height: 72px; gap: 10px; }
+  .site-header .brand-lockup { gap: 8px; }
+  .site-header .brand-lockup img { width: 70px; height: 40px; }
+  .site-header .brand-text small { font-size: 7px; }
+  .site-header .brand-text strong { font-size: 21px; }
+  .site-header .mobile-menu-toggle { width: 37px; height: 37px; }
+  .site-header .mobile-nav { max-height: calc(100dvh - 72px); padding-inline: 18px; }
+  .site-footer { padding-top: 30px; padding-bottom: calc(67px + env(safe-area-inset-bottom, 0px)); border-radius: 15px 15px 0 0; }
+  .site-footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 24px; padding-bottom: 28px; }
+  .site-footer .footer-brand { grid-column: 1 / -1; }
+  .site-footer .footer-logo .brand-text strong { font-size: 23px; }
+  .site-footer .footer-brand > p { max-width: 340px; }
+  .site-footer .footer-social-links { margin-top: 16px; }
+  .site-footer .footer-column h3 { margin-bottom: 12px; font-size: 13px; }
+  .site-footer .footer-links { gap: 7px; }
+  .site-footer .footer-links a { font-size: 12px; }
+  .site-footer .footer-contact-column { grid-column: 1 / -1; padding-top: 0; }
+  .site-footer .footer-contact-list { gap: 12px; }
+  .site-footer .footer-contact-item { font-size: 12px; }
+  .site-footer .footer-contact-item strong { font-size: 17px; }
+  .site-footer .footer-zalo-badge { margin-top: 17px; }
+  .site-footer .footer-zalo-badge strong { font-size: 12px; }
+  .site-footer .footer-zalo-badge small { font-size: 10px; }
+  .site-footer .footer-bottom-inner { min-height: 76px; padding-block: 16px; gap: 6px; font-size: 9px; }
+}
+
+@media (max-width: 370px) {
+  .site-header .brand-lockup img { width: 63px; height: 35px; }
+  .site-header .brand-text strong { font-size: 19px; }
+  .site-header .brand-text small { font-size: 7px; }
+}

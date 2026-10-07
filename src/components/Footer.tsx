@@ -14,12 +14,24 @@ export default function Footer() {
             <img src={logo} alt="" width="104" height="52" loading="lazy" />
             <span className="brand-text"><small>VĂN PHÒNG HỌC LÁI XE</small><strong>LINH XUÂN</strong></span>
           </Link>
-          <p>{CONTACT.brandName} hỗ trợ lựa chọn khóa học lái xe, tìm hiểu học phí, chuẩn bị hồ sơ và kết nối trực tiếp với Quốc Anh.</p>
+          <p>Vững tay lái · Tận tâm · Đồng hành cùng bạn trên mỗi hành trình.</p>
           <div className="footer-social-links">
             <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" aria-label="Chat Zalo với văn phòng Linh Xuân"><ZaloIcon size={20} /></a>
             <a href={CONTACT.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook Quốc Anh"><Facebook size={20} /></a>
             <a href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer" aria-label="TikTok Quốc Anh"><TikTokIcon size={20} /></a>
           </div>
+        </div>
+        <div className="footer-column">
+          <h3>Liên kết nhanh</h3>
+          <nav className="footer-links" aria-label="Thông tin trong chân trang">
+            <Link to="/">Trang chủ</Link>
+            <Link to="/khoa-hoc#danh-sach-khoa-hoc">Khóa học</Link>
+            <Link to="/#lo-trinh">Quy trình thi & học</Link>
+            <Link to="/#hoc-phi">Học phí</Link>
+            <Link to="/#gioi-thieu">Văn phòng</Link>
+            <Link to="/#mang-xa-hoi">Góc học lái xe</Link>
+            <Link to="/lien-he">Liên hệ</Link>
+          </nav>
         </div>
         <div className="footer-column">
           <h3>Khóa học lái xe</h3>
@@ -31,23 +43,16 @@ export default function Footer() {
             <Link to="/khoa-hoc/hang-c1">Ô tô hạng C1</Link>
           </nav>
         </div>
-        <div className="footer-column">
-          <h3>Thông tin hữu ích</h3>
-          <nav className="footer-links" aria-label="Thông tin trong chân trang">
-            <Link to="/#gioi-thieu">Về văn phòng Linh Xuân</Link>
-            <Link to="/#lo-trinh">Lộ trình học</Link>
-            <Link to="/#mang-xa-hoi">Góc học lái xe</Link>
-            <Link to="/lien-he">Liên hệ & tư vấn</Link>
-            <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer">Chat 1:1 với admin <ArrowUpRight size={14} /></a>
-          </nav>
-        </div>
         <div className="footer-column footer-contact-column">
-          <h3>Liên hệ văn phòng</h3>
+          <h3>Thông tin liên hệ</h3>
           <div className="footer-contact-list">
             <a href={CONTACT.phoneUrl} className="footer-contact-item"><Phone size={18} /><span><small>Hotline tư vấn</small><strong>{CONTACT.phoneDisplay}</strong></span></a>
             <a href={`mailto:${CONTACT.email}`} className="footer-contact-item"><Mail size={18} /><span>{CONTACT.email}</span></a>
             <a href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer" className="footer-contact-item"><MapPin size={18} /><span>{CONTACT.address}</span></a>
           </div>
+          <a className="footer-zalo-badge" href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer">
+            <ZaloIcon size={27} /><span><strong>Chat Zalo với văn phòng</strong><small>Tư vấn trực tiếp, dễ dàng kết nối</small></span><ArrowUpRight size={17} />
+          </a>
         </div>
       </div>
       <div className="footer-bottom">

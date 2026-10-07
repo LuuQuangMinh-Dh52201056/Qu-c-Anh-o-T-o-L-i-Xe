@@ -36,6 +36,8 @@ export default function Header() {
   const navigation = [
     { to: '/', label: 'Trang chủ', active: location.pathname === '/' && !location.hash },
     { to: '/khoa-hoc#danh-sach-khoa-hoc', label: 'Khóa học', active: location.pathname.startsWith('/khoa-hoc') },
+    { to: '/#lo-trinh', label: 'Quy trình thi', active: location.pathname === '/' && location.hash === '#lo-trinh' },
+    { to: '/#hoc-phi', label: 'Học phí', active: location.pathname === '/' && location.hash === '#hoc-phi' },
     { to: '/#gioi-thieu', label: 'Văn phòng', active: location.pathname === '/' && location.hash === '#gioi-thieu' },
     { to: '/#mang-xa-hoi', label: 'Góc học lái xe', active: location.pathname === '/' && location.hash === '#mang-xa-hoi' },
     { to: '/lien-he', label: 'Liên hệ', active: location.pathname === '/lien-he' },

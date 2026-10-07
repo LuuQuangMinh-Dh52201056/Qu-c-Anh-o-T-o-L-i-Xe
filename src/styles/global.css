@@ -3,6 +3,8 @@
 @import './courses.css';
 @import './course-detail.css';
 @import './tiktok.css';
+@import './reference-home.css';
+@import './reference-chrome.css';
 
 :root {
   font-family: 'Be Vietnam Pro', Arial, sans-serif;

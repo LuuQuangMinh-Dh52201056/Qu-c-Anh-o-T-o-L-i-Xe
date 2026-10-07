@@ -6,7 +6,7 @@ test('desktop: browse courses and open real admin contact channels', async ({ pa
   page.on('pageerror', error => errors.push(error.message))
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/')
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Vững tay lái.')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Tự tin trên mọi hành trình.')
   await expect(page.locator('form')).toHaveCount(0)
   await expect(page.locator('.course-card')).toHaveCount(5)
   await page.getByRole('button', { name: 'Xe máy', exact: true }).click()

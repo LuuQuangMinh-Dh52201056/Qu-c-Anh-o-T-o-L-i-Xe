@@ -8,6 +8,12 @@ Mỗi hạng có trang riêng với thông tin phương tiện, đối tượng 
 
 Khung **Chat với admin** cho phép chọn kênh để trò chuyện 1:1 qua Zalo hoặc Messenger. Cuộc hội thoại diễn ra trên ứng dụng/nền tảng đã chọn; website không tạo tin nhắn giả, không tự báo admin đang online và không cần lưu thông tin cá nhân của học viên.
 
+## Bố cục trang chủ
+
+Trang chủ dùng bố cục xanh dương–trắng theo mẫu tham chiếu: header gọn với hotline, khu vực giới thiệu cùng ảnh giáo viên, 5 thẻ khóa học, khối học phí, lộ trình học & thi 6 bước, dịch vụ hỗ trợ, ảnh đào tạo thực tế, video TikTok, liên hệ kèm bản đồ, câu hỏi thường gặp và footer đầy đủ. Menu **Quy trình thi** và **Học phí** dẫn đến đúng mục trên trang; các trang chi tiết từng hạng vẫn được giữ.
+
+Logo, toàn bộ ảnh/video hiện có và giá khóa học được giữ nguyên từ `public/logo-linh-xuan.png`, `src/anh` và [src/data/courses.ts](./src/data/courses.ts). Khu vực liên hệ dùng nút gọi điện, Zalo và Messenger thay cho form điền thông tin. Giao diện mới nằm tại [src/pages/HomePage.tsx](./src/pages/HomePage.tsx), [src/components/HomeCourseShowcase.tsx](./src/components/HomeCourseShowcase.tsx), [src/styles/reference-home.css](./src/styles/reference-home.css), [src/styles/reference-chrome.css](./src/styles/reference-chrome.css) và [src/styles/home-course-showcase.css](./src/styles/home-course-showcase.css).
+
 ## Cấu hình liên hệ
 
 Thông tin liên hệ dùng chung được tập trung tại [src/data/contact.ts](./src/data/contact.ts). Khi đổi số điện thoại hoặc tài khoản mạng xã hội, sửa cấu hình này để đồng bộ các nút liên hệ, chân trang và khung chat.
@@ -38,6 +44,10 @@ Khung TikTok giữ lại chiều cao đã hiển thị trong khi tải lại ho�
 ## Chạy trên máy cá nhân
 
 Yêu cầu Node.js 20 trở lên.
+
+Nếu đang mở thư mục `D:\WEBTUYENSINHQUOCANh`, có thể chạy ngay `npm install` và `npm run dev` tại đây. Các lệnh ở thư mục ngoài chuyển tiếp vào dự án `Qu-c-Anh-o-T-o-L-i-Xe`. Trong VS Code, nhấn **F5** để khởi động website và mở Chrome tại địa chỉ đúng.
+
+Website development chạy tại `http://127.0.0.1:5173/`. Nếu bản development của website đang chạy, lệnh `npm run dev` dùng lại địa chỉ đó để tránh tạo một máy chủ thứ hai. Giữ terminal đang chạy máy chủ mở trong lúc dùng website.
 
 ```bash
 npm ci
@@ -74,7 +84,7 @@ Trên Windows, bài kiểm tra dùng Microsoft Edge đã cài sẵn. Trên các 
 npx playwright install chromium
 ```
 
-Playwright tự khởi động máy chủ production trên cổng `4186`, kiểm tra các trang, bộ lọc, menu điện thoại, khung chat, nhận diện Linh Xuân, địa chỉ, tỉ lệ ảnh xe và hoạt động của TikTok (tải, làm mới, quay lại trang, tải thất bại). Kiểm tra TikTok sử dụng mô phỏng mã nhúng để kết quả không phụ thuộc mạng bên ngoài. Ảnh xem trước máy tính và điện thoại nằm tại `artifacts/home-desktop.png` và `artifacts/home-mobile.png`; khi kiểm tra thất bại, ảnh và trace lưu trong `test-results`.
+Playwright tự khởi động máy chủ production trên cổng `4186`, kiểm tra các trang, bộ lọc, menu điện thoại, khung chat, nhận diện Linh Xuân, địa chỉ, tỉ lệ ảnh xe và hoạt động của TikTok (tải, làm mới, quay lại trang, tải thất bại). Các kiểm tra trang chủ mới xác nhận menu quy trình/học phí đến đúng mục và nút duyệt khóa học chỉ cuộn danh sách ngang. Kiểm tra TikTok sử dụng mô phỏng mã nhúng để kết quả không phụ thuộc mạng bên ngoài. Ảnh xem trước giao diện mới nằm tại `artifacts/reference-home-desktop.png`, `artifacts/reference-home-mobile.png` và các bản toàn trang có hậu tố `-full`; khi kiểm tra thất bại, ảnh và trace lưu trong `test-results`.
 
 ## Triển khai Render Web Service
 

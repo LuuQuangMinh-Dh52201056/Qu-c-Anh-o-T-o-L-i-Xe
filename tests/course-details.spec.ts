@@ -6,7 +6,7 @@ const viewports = [
 ]
 
 const courseChoices = [
-  { slug: 'hang-a', title: 'Hạng A', price: '2.500.000đ', firstModule: 'Tư duy lái xe an toàn', localVideo: true },
+  { slug: 'hang-a', title: 'Hạng A', price: '2.000.000đ', firstModule: 'Tư duy lái xe an toàn', localVideo: true },
   { slug: 'hang-a1', title: 'Hạng A1', price: '900.000đ', firstModule: 'Lý thuyết gắn với việc đi xe hằng ngày', localVideo: true },
   { slug: 'hang-b-so-san', title: 'B Số Sàn', price: '22.000.000đ', firstModule: 'Làm quen khoang lái và kiến thức nền', localVideo: false },
   { slug: 'hang-b-tu-dong', title: 'B Tự Động', price: '22.000.000đ', firstModule: 'Hiểu xe và thói quen trước khi lái', localVideo: false },

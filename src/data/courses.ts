@@ -17,7 +17,7 @@ export const courses: Course[] = [
     description:
       'Khóa học hạng A tập trung vào kỹ năng làm chủ mô tô phân khối lớn, tư thế điều khiển, khả năng quan sát, xử lý tình huống và chuẩn bị cho quá trình sát hạch.',
     image: courseAImage,
-    price: '2.500.000đ',
+    price: '2.000.000đ',
     bullets: [
       'Làm quen mô tô phân khối lớn',
       'Rèn kỹ năng điều khiển xe',
