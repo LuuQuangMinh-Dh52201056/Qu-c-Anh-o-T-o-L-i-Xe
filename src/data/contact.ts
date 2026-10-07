@@ -1,7 +1,7 @@
 const address = 'Đường Số 1, Khu Phố 4, Phường Linh Xuân, Thủ Đức, Thành Phố Hồ Chí Minh'
 
 export const CONTACT = {
-  brandName: 'Văn Phòng Tư Vấn Tuyển Sinh Linh Xuân',
+  brandName: 'Văn Phòng Học Lái Xe Linh Xuân',
   brandShort: 'Linh Xuân',
   phone: '0879227614',
   phoneDisplay: '0879 227 614',

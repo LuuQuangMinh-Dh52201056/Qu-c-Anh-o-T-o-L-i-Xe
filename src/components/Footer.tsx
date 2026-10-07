@@ -12,9 +12,9 @@ export default function Footer() {
         <div className="footer-brand">
           <Link to="/" className="brand-lockup footer-logo" aria-label={`${CONTACT.brandName} — Trang chủ`}>
             <img src={logo} alt="" width="104" height="52" loading="lazy" />
-            <span className="brand-text"><small>VĂN PHÒNG TƯ VẤN TUYỂN SINH</small><strong>LINH XUÂN</strong></span>
+            <span className="brand-text"><small>VĂN PHÒNG HỌC LÁI XE</small><strong>LINH XUÂN</strong></span>
           </Link>
-          <p>Văn phòng tư vấn tuyển sinh tại Linh Xuân. Hỗ trợ lựa chọn khóa học lái xe, tìm hiểu học phí, chuẩn bị hồ sơ và kết nối trực tiếp với Quốc Anh.</p>
+          <p>{CONTACT.brandName} hỗ trợ lựa chọn khóa học lái xe, tìm hiểu học phí, chuẩn bị hồ sơ và kết nối trực tiếp với Quốc Anh.</p>
           <div className="footer-social-links">
             <a href={CONTACT.zaloUrl} target="_blank" rel="noopener noreferrer" aria-label="Chat Zalo với văn phòng Linh Xuân"><ZaloIcon size={20} /></a>
             <a href={CONTACT.facebookUrl} target="_blank" rel="noopener noreferrer" aria-label="Facebook Quốc Anh"><Facebook size={20} /></a>

@@ -7,7 +7,7 @@ export default function EnrollmentSchedule() {
     <section className="course-intake" aria-labelledby="course-intake-title">
       <div className="course-intake__icon"><CalendarDays size={28} aria-hidden="true" /></div>
       <div className="course-intake__copy">
-        <span className="section-label">TƯ VẤN TUYỂN SINH LINH XUÂN</span>
+        <span className="section-label">{CONTACT.brandName.toUpperCase()}</span>
         <h2 id="course-intake-title">Tìm lớp phù hợp với lịch của bạn.</h2>
         <p>
           Liên hệ trực tiếp để xác nhận đợt khai giảng gần nhất, lịch học và hồ sơ cần chuẩn bị.

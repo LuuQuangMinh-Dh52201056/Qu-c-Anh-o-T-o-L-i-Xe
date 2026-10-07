@@ -1,6 +1,6 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { Facebook, MapPin, Menu, Phone, X } from 'lucide-react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { CONTACT } from '../data/contact'
 import { TikTokIcon } from './SocialIcons'
 
@@ -19,7 +19,7 @@ export default function Header() {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setOpen(false)
-        toggleRef.current?.focus()
+        toggleRef.current?.focus({ preventScroll: true })
       }
     }
     const onPointerDown = (event: PointerEvent) => {
@@ -33,15 +33,17 @@ export default function Header() {
     }
   }, [open])
 
-  const navigation = (
-    <>
-      <NavLink to="/" end onClick={() => setOpen(false)}>Trang chủ</NavLink>
-      <NavLink to="/khoa-hoc" onClick={() => setOpen(false)}>Khóa học</NavLink>
-      <Link to="/#gioi-thieu" onClick={() => setOpen(false)}>Văn phòng</Link>
-      <Link to="/#mang-xa-hoi" onClick={() => setOpen(false)}>Góc học lái xe</Link>
-      <NavLink to="/lien-he" onClick={() => setOpen(false)}>Liên hệ</NavLink>
-    </>
-  )
+  const navigation = [
+    { to: '/', label: 'Trang chủ', active: location.pathname === '/' && !location.hash },
+    { to: '/khoa-hoc#danh-sach-khoa-hoc', label: 'Khóa học', active: location.pathname.startsWith('/khoa-hoc') },
+    { to: '/#gioi-thieu', label: 'Văn phòng', active: location.pathname === '/' && location.hash === '#gioi-thieu' },
+    { to: '/#mang-xa-hoi', label: 'Góc học lái xe', active: location.pathname === '/' && location.hash === '#mang-xa-hoi' },
+    { to: '/lien-he', label: 'Liên hệ', active: location.pathname === '/lien-he' },
+  ].map(item => (
+    <Link key={item.to} to={item.to} className={item.active ? 'active' : undefined} aria-current={item.active ? 'page' : undefined} onClick={() => setOpen(false)}>
+      {item.label}
+    </Link>
+  ))
 
   return (
     <>
@@ -61,7 +63,7 @@ export default function Header() {
         <div className="container header-inner">
           <Link to="/" className="brand-lockup" aria-label={`${CONTACT.brandName} — Trang chủ`} onClick={() => setOpen(false)}>
             <img src={logo} alt="" width="104" height="52" />
-            <span className="brand-text"><small>VĂN PHÒNG TƯ VẤN TUYỂN SINH</small><strong>LINH XUÂN</strong></span>
+            <span className="brand-text"><small>VĂN PHÒNG HỌC LÁI XE</small><strong>LINH XUÂN</strong></span>
           </Link>
           <nav className="desktop-nav" aria-label="Điều hướng chính">{navigation}</nav>
           <a href={CONTACT.phoneUrl} className="header-hotline" aria-label={`Gọi tư vấn ${CONTACT.phoneDisplay}`}><Phone size={18} /><span><small>HOTLINE TƯ VẤN</small><strong>{CONTACT.phoneDisplay}</strong></span></a>

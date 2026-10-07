@@ -13,9 +13,8 @@
 .tiktok-embed-host { min-width: 0; width: 100%; }
 .tiktok-embed-host > blockquote { width: 100% !important; margin: 0 auto !important; min-width: 280px !important; }
 .tiktok-embed-host iframe { display: block; max-width: 100%; width: 100%; border: 0; }
-.tiktok-feed-card[data-status="loading"] .tiktok-embed-host { visibility: hidden; }
+.tiktok-feed-card[data-status="loading"] .tiktok-embed-host,
 .tiktok-feed-card[data-status="unavailable"] .tiktok-embed-host { position: absolute; left: 18px; right: 18px; width: auto; visibility: hidden; }
-.tiktok-feed-card[data-status="ready"] .tiktok-feed-stage { min-height: 0; }
 .tiktok-feed-loading, .tiktok-feed-unavailable { position: absolute; inset: 20px 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; border-radius: 13px; background: linear-gradient(145deg, #f5f8fe, #eef4ff); padding: 32px; }
 .tiktok-feed-loading > svg { color: var(--blue); margin-bottom: 20px; animation: tiktok-spin 1s linear infinite; }
 .tiktok-feed-loading strong { color: var(--navy); font-size: 16px; }
@@ -85,6 +84,7 @@
   .tiktok-feed-heading p { font-size: 10px; }
   .tiktok-refresh { padding: 8px; }
   .tiktok-feed-stage { min-height: 390px; padding: 14px 5px; }
+  .tiktok-feed-card[data-status="loading"] .tiktok-embed-host,
   .tiktok-feed-card[data-status="unavailable"] .tiktok-embed-host { left: 5px; right: 5px; }
   .tiktok-feed-loading, .tiktok-feed-unavailable { inset: 14px 10px; padding: 24px 15px; }
   .tiktok-feed-unavailable h4 { font-size: 18px; }

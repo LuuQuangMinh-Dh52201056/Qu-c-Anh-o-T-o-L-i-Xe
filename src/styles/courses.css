@@ -555,7 +555,7 @@
 
 .course-detail__section {
   margin-bottom: 49px;
-  scroll-margin-top: 110px;
+  scroll-margin-top: 0;
 }
 
 .course-detail__section:last-child {

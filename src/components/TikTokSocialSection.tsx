@@ -13,11 +13,34 @@ const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000
 
 function TikTokCreatorFeed() {
   const cardRef = useRef<HTMLDivElement>(null)
+  const stageRef = useRef<HTMLDivElement>(null)
   const hostRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<FeedStatus>('loading')
   const [attempt, setAttempt] = useState(0)
+  const [reservedStageHeight, setReservedStageHeight] = useState<number | null>(null)
   const statusRef = useRef(status)
   statusRef.current = status
+
+  useEffect(() => {
+    if (status !== 'ready') return
+    const stage = stageRef.current
+    if (!stage) return
+    const rememberHeight = () => {
+      if (statusRef.current !== 'ready') return
+      const height = stage.getBoundingClientRect().height
+      if (height > 0) setReservedStageHeight(current => current !== null && Math.abs(current - height) < .5 ? current : height)
+    }
+    rememberHeight()
+    // Keep the measured space current as TikTok expands its iframe or the
+    // responsive layout changes. Retries then occupy the same space.
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(rememberHeight) : undefined
+    observer?.observe(stage)
+    window.addEventListener('resize', rememberHeight)
+    return () => {
+      observer?.disconnect()
+      window.removeEventListener('resize', rememberHeight)
+    }
+  }, [status])
 
   useEffect(() => {
     const card = cardRef.current
@@ -159,7 +182,6 @@ function TikTokCreatorFeed() {
         script.onerror = null
         script.remove()
       }
-      host.replaceChildren()
     }
   }, [attempt])
 
@@ -168,7 +190,7 @@ function TikTokCreatorFeed() {
       <div><span className="tiktok-feed-icon"><TikTokIcon size={21} /></span><div><h3>Góc học lái trên TikTok</h3><p>Video mới từ kênh Quốc Anh</p></div></div>
       <button className="tiktok-refresh" type="button" onClick={() => setAttempt(current => current + 1)} disabled={status === 'loading'} aria-label="Tải lại video" title="Tải lại video"><RefreshCw size={17} /><span>Tải lại</span></button>
     </div>
-    <div className="tiktok-feed-stage">
+    <div ref={stageRef} className="tiktok-feed-stage" style={status !== 'ready' && reservedStageHeight !== null ? { height: reservedStageHeight } : undefined}>
       <div ref={hostRef} className="tiktok-embed-host" data-testid="tiktok-embed-host" />
       {status === 'loading' && <div className="tiktok-feed-loading" role="status"><LoaderCircle size={30} /><strong>Đang tải video từ TikTok</strong><p>Khám phá những bài học và khoảnh khắc mới từ kênh.</p></div>}
       {status === 'unavailable' && <div className="tiktok-feed-unavailable" role="status"><span className="tiktok-unavailable-icon"><TikTokIcon size={37} /></span><h4>TikTok chưa hiển thị video</h4><p>Bạn có thể mở kênh để xem video mới hoặc thử tải lại tại đây.</p><div><a className="tiktok-open-button" href={CONTACT.tiktokUrl} target="_blank" rel="noopener noreferrer">Mở kênh TikTok <ArrowUpRight size={17} /></a><button className="tiktok-retry-button" type="button" onClick={() => setAttempt(current => current + 1)}><RefreshCw size={16} />Tải lại video</button></div></div>}

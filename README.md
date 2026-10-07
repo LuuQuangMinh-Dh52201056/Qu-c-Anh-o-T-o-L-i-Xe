@@ -1,8 +1,10 @@
-# Văn Phòng Tư Vấn Tuyển Sinh Linh Xuân
+# Văn Phòng Học Lái Xe Linh Xuân
 
-Website tư vấn tuyển sinh lái xe của văn phòng Linh Xuân, xây dựng bằng Vite, React và TypeScript, có máy chủ Node production để triển khai trên Render. Bộ nhận diện xanh dương–trắng dùng logo văn phòng được cung cấp tại `public/logo-linh-xuan.png`.
+Website của Văn Phòng Học Lái Xe Linh Xuân, xây dựng bằng Vite, React và TypeScript, có máy chủ Node production để triển khai trên Render. Bộ nhận diện xanh dương–trắng dùng logo văn phòng được cung cấp tại `public/logo-linh-xuan.png`. Văn phòng hỗ trợ tư vấn khóa học, chuẩn bị hồ sơ và kết nối với Quốc Anh.
 
 Giao diện giới thiệu các khóa A, A1, B số sàn, B tự động và C1, học phí tham khảo, lộ trình học, dịch vụ tư vấn, thư viện ảnh hoạt động đào tạo và thông tin văn phòng. Khung ảnh xe dùng `object-fit: contain` để giữ trọn phương tiện. Website không dùng form tư vấn; học viên kết nối trực tiếp qua điện thoại, Zalo hoặc Messenger. Các tài khoản Facebook và TikTok Quốc Anh đang sử dụng được giữ đúng.
+
+Mỗi hạng có trang riêng với thông tin phương tiện, đối tượng phù hợp, nội dung học, lộ trình, hướng dẫn hồ sơ, học phí tham khảo và câu hỏi thường gặp. Nội dung riêng được quản lý tại [src/data/courseDetails.ts](./src/data/courseDetails.ts). Thông tin cần xác nhận theo đợt học được trao đổi trực tiếp với văn phòng; website không đưa ra cam kết về kết quả sát hạch.
 
 Khung **Chat với admin** cho phép chọn kênh để trò chuyện 1:1 qua Zalo hoặc Messenger. Cuộc hội thoại diễn ra trên ứng dụng/nền tảng đã chọn; website không tạo tin nhắn giả, không tự báo admin đang online và không cần lưu thông tin cá nhân của học viên.
 
@@ -26,6 +28,12 @@ Dữ liệu khóa học nằm tại [src/data/courses.ts](./src/data/courses.ts)
 Nguồn TikTok chỉ tải khi khu vực video đến gần màn hình, và được làm mới mỗi 5 phút khi khu vực này đang hiển thị, tab hoạt động và người xem không tương tác với iframe. Nút tải lại cho phép làm mới ngay. Nếu TikTok hoặc trình duyệt chặn nội dung nhúng, giao diện cung cấp liên kết mở kênh và thử lại. Website không cần token API, không thu thập hay sao chép video; nội dung hiển thị phụ thuộc TikTok.
 
 Video hướng dẫn A/A1 sẵn có được giữ riêng và dùng `preload="none"` để tránh tải tệp lớn trước khi học viên phát video.
+
+## Điều hướng và vị trí nội dung
+
+Menu và các liên kết nội bộ cuộn một lần đến đúng mục, chừa khoảng cách theo chiều cao header thực tế. Bấm lại cùng mục vẫn đưa người xem về nội dung đó; menu đánh dấu đúng mục theo đường dẫn và hash. Nút Quay lại khôi phục vị trí cuộn và bộ lọc khóa học trong phiên sử dụng.
+
+Khung TikTok giữ lại chiều cao đã hiển thị trong khi tải lại hoặc tải lỗi để tránh đẩy nội dung và làm trang đổi vị trí.
 
 ## Chạy trên máy cá nhân
 

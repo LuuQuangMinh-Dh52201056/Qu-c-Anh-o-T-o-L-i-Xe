@@ -45,7 +45,7 @@ test('mobile: navigation, chat, filters and pages fit the viewport', async ({ pa
   await page.getByRole('button', { name: 'Mở menu', exact: true }).click()
   await expect(page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' })).toBeVisible()
   await page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' }).getByRole('link', { name: 'Khóa học', exact: true }).click()
-  await expect(page).toHaveURL(/\/khoa-hoc$/)
+  await expect(page).toHaveURL(/\/khoa-hoc#danh-sach-khoa-hoc$/)
   await expect(page.getByRole('navigation', { name: 'Điều hướng trên điện thoại' })).toHaveCount(0)
   await page.getByRole('button', { name: 'Xe máy', exact: true }).click()
   await expect(page.locator('.course-card')).toHaveCount(2)
@@ -90,7 +90,8 @@ test('all detail pages, old registration redirect and missing pages work', async
 test('office identity, logo and vehicle frames preserve the supplied content', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 1000 })
   await page.goto('/')
-  await expect(page).toHaveTitle(/Văn Phòng Tư Vấn Tuyển Sinh Linh Xuân/)
+  await expect(page).toHaveTitle(/Văn Phòng Học Lái Xe Linh Xuân/)
+  await expect(page.locator('.site-header .brand-text')).toContainText('VĂN PHÒNG HỌC LÁI XE')
   await expect(page.locator('.site-header .brand-text')).toContainText('LINH XUÂN')
   await expect(page.locator('.site-header .brand-lockup img')).toHaveAttribute('src', '/logo-linh-xuan.png')
   const styles = await page.locator('.course-card__media img').evaluateAll(images => images.map(image => getComputedStyle(image).objectFit))

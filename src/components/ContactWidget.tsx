@@ -13,18 +13,18 @@ export default function ContactWidget() {
 
   const closePanel = (restoreFocus = false) => {
     setOpen(false)
-    if (restoreFocus) triggerRef.current?.focus()
+    if (restoreFocus) triggerRef.current?.focus({ preventScroll: true })
   }
 
   useEffect(() => { setOpen(false) }, [location.pathname])
 
   useEffect(() => {
     if (!open) return
-    const frame = requestAnimationFrame(() => closeRef.current?.focus())
+    const frame = requestAnimationFrame(() => closeRef.current?.focus({ preventScroll: true }))
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setOpen(false)
-        triggerRef.current?.focus()
+        triggerRef.current?.focus({ preventScroll: true })
       }
     }
     const onPointerDown = (event: PointerEvent) => {

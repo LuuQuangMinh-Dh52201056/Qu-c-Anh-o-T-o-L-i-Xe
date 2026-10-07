@@ -13,7 +13,7 @@ const faqs = [
   { question: 'Tôi chưa biết nên chọn hạng nào, có thể hỏi trước không?', answer: 'Có. Bạn có thể chat hoặc gọi văn phòng Linh Xuân để trao đổi về loại xe muốn lái và mục đích sử dụng. Admin sẽ tư vấn lựa chọn phù hợp trước khi bạn quyết định.' },
   { question: 'Tôi cần cung cấp thông tin gì khi liên hệ?', answer: 'Bạn có thể chia sẻ khóa học quan tâm, kinh nghiệm lái xe hiện tại và thời gian có thể học. Các yêu cầu về hồ sơ sẽ được admin hướng dẫn trực tiếp theo khóa học.' },
   { question: 'Làm sao để biết học phí và lịch khai giảng?', answer: 'Liên hệ qua Zalo, Messenger hoặc hotline để nhận thông tin của khóa học bạn quan tâm. Hãy xác nhận học phí, các khoản liên quan và lịch học trước khi đăng ký.' },
-  { question: 'Địa chỉ văn phòng có phải địa điểm thực hành không?', answer: 'Địa chỉ Linh Xuân trên website là văn phòng tư vấn tuyển sinh. Địa điểm học lý thuyết, thực hành và sát hạch được trao đổi cụ thể theo từng khóa học. Bạn nên xác nhận các địa điểm này với admin khi tư vấn.' },
+  { question: 'Địa chỉ văn phòng có phải địa điểm thực hành không?', answer: 'Địa chỉ Linh Xuân trên website là địa điểm tư vấn của ' + CONTACT.brandName + '. Địa điểm học lý thuyết, thực hành và sát hạch được trao đổi cụ thể theo từng khóa học. Bạn nên xác nhận các địa điểm này với admin khi tư vấn.' },
 ]
 
 export default function ContactPage() {
@@ -22,7 +22,7 @@ export default function ContactPage() {
       <section className="page-intro">
         <div className="container">
           <div className="breadcrumbs"><Link to="/">Trang chủ</Link><span>/</span><span>Liên hệ văn phòng</span></div>
-          <span className="eyebrow">VĂN PHÒNG TƯ VẤN TUYỂN SINH LINH XUÂN</span>
+          <span className="eyebrow">{CONTACT.brandName.toUpperCase()}</span>
           <h1>Một cuộc trò chuyện.<br /><em>Một khởi đầu tự tin.</em></h1>
           <p>Từ lựa chọn khóa học đến chuẩn bị hồ sơ, đội ngũ tư vấn luôn sẵn sàng đồng hành. Kết nối trực tiếp qua kênh thuận tiện nhất với bạn.</p>
           <div className="contact-intro-points"><span><MessageCircle size={16} />Tư vấn 1:1</span><span><FileText size={16} />Hướng dẫn hồ sơ</span><span><MapPin size={16} />Văn phòng tại Linh Xuân</span></div>
@@ -59,7 +59,7 @@ export default function ContactPage() {
       <section className="section contact-directions-section">
         <div className="container contact-directions-grid">
           <div className="contact-directions-copy"><span className="eyebrow">TƯ VẤN TẠI VĂN PHÒNG</span><h2>Đến đúng nơi.<br />Được hướng dẫn rõ ràng.</h2><p>{CONTACT.brandName}<br />{CONTACT.address}</p><div className="contact-visit-points"><div><Check size={18} /><span>Gọi hoặc nhắn Zalo trước khi đến để hẹn thời gian.</span></div><div><Check size={18} /><span>Chuẩn bị câu hỏi về khóa học, học phí và lịch học.</span></div><div><Check size={18} /><span>Trao đổi địa điểm học và hồ sơ theo khóa bạn chọn.</span></div></div><a className="btn btn-primary" href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={18} />Mở chỉ đường trên Google Maps <ArrowUpRight size={17} /></a></div>
-          <div className="contact-map-frame"><iframe title="Bản đồ văn phòng tư vấn tuyển sinh Linh Xuân" src={CONTACT.mapsEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /><a className="contact-map-label" href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={19} /><span><strong>Văn phòng Linh Xuân</strong><small>Đường Số 1 · Khu Phố 4 · Thủ Đức</small></span><ArrowUpRight size={19} /></a></div>
+          <div className="contact-map-frame"><iframe title={`Bản đồ ${CONTACT.brandName}`} src={CONTACT.mapsEmbedUrl} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /><a className="contact-map-label" href={CONTACT.mapsUrl} target="_blank" rel="noopener noreferrer"><MapPin size={19} /><span><strong>Văn phòng Linh Xuân</strong><small>Đường Số 1 · Khu Phố 4 · Thủ Đức</small></span><ArrowUpRight size={19} /></a></div>
         </div>
       </section>
       <section className="section contact-faq">

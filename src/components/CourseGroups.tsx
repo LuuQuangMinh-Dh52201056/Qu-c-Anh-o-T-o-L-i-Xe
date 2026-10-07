@@ -1,10 +1,12 @@
 ﻿import { useState } from 'react'
 import { Bike, CarFront, LayoutGrid } from 'lucide-react'
+import { useLocation } from 'react-router-dom'
 
 import CourseCard from './CourseCard'
 import { courses } from '../data/courses'
 
 type CourseFilter = 'all' | 'motorcycle' | 'car'
+const previousFilters = new Map<string, CourseFilter>()
 
 const filters = [
   { value: 'all' as const, label: 'Tất cả khóa học', icon: LayoutGrid },
@@ -13,7 +15,8 @@ const filters = [
 ]
 
 export default function CourseGroups({ showFilters = true }: { showFilters?: boolean }) {
-  const [activeFilter, setActiveFilter] = useState<CourseFilter>('all')
+  const { pathname } = useLocation()
+  const [activeFilter, setActiveFilter] = useState<CourseFilter>(() => previousFilters.get(pathname) ?? 'all')
   const visibleCourses = courses.filter((course) => {
     const isMotorcycle = course.code === 'A' || course.code === 'A1'
     return activeFilter === 'all' || (activeFilter === 'motorcycle' ? isMotorcycle : !isMotorcycle)
@@ -29,7 +32,10 @@ export default function CourseGroups({ showFilters = true }: { showFilters?: boo
                 type="button"
                 className={activeFilter === value ? 'is-active' : ''}
                 aria-pressed={activeFilter === value}
-                onClick={() => setActiveFilter(value)}
+                onClick={() => {
+                  previousFilters.set(pathname, value)
+                  setActiveFilter(value)
+                }}
                 key={value}
               >
                 <Icon size={16} aria-hidden="true" />

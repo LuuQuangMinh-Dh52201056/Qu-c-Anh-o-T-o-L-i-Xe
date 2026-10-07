@@ -14,7 +14,7 @@ export default function CoursesPage() {
           <nav className="page-breadcrumb" aria-label="Đường dẫn trang">
             <Link to="/">Trang chủ</Link><span aria-hidden="true">/</span><span aria-current="page">Khóa học</span>
           </nav>
-          <span className="section-label">TƯ VẤN TUYỂN SINH LINH XUÂN</span>
+          <span className="section-label">{CONTACT.brandName.toUpperCase()}</span>
           <div className="courses-hero__heading">
             <h1>Chọn hạng bằng.<br /><em>Bắt đầu hành trình.</em></h1>
             <div>
@@ -30,7 +30,7 @@ export default function CoursesPage() {
         </div>
       </section>
 
-      <section className="section courses-page__catalog" aria-label="Danh sách khóa học">
+      <section className="section courses-page__catalog" id="danh-sach-khoa-hoc" aria-label="Danh sách khóa học">
         <div className="container">
           <CourseGroups />
           <p className="courses-page__price-note">
